@@ -1,34 +1,37 @@
 <!DOCTYPE html>
-<html lang="en">
-
+<html lang="en-GB">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>MyResume.Web</title>
+    <meta name="description" content="Vache Chek – Senior Software Engineer. Interactive CV." />
+    <meta name="color-scheme" content="light dark" />
+    <title>Vache Chek – CV</title>
     <base href="/" />
+    <script>
+        // Apply the saved theme before first paint to avoid a flash. Mirrors js/theme.js.
+        (function () {
+            try {
+                var saved = localStorage.getItem("theme");
+                if (saved === "light" || saved === "dark") {
+                    document.documentElement.dataset.theme = saved;
+                }
+            } catch (_) { /* storage unavailable: fall back to prefers-color-scheme */ }
+        })();
+    </script>
     <link rel="preload" id="webassembly" />
-    <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
     <link rel="stylesheet" href="css/app.css" />
-    <link rel="icon" type="image/png" href="favicon.png" />
-    <link href="MyResume.Web.styles.css" rel="stylesheet" />
+    <link rel="stylesheet" href="MyResume.Web.styles.css" />
     <script type="importmap"></script>
 </head>
-
 <body>
     <div id="app">
-        <svg class="loading-progress">
-            <circle r="40%" cx="50%" cy="50%" />
-            <circle r="40%" cx="50%" cy="50%" />
-        </svg>
-        <div class="loading-progress-text"></div>
+        <p class="status" aria-busy="true">Loading…</p>
     </div>
-
-    <div id="blazor-error-ui">
+    <div id="blazor-error-ui" role="alert">
         An unhandled error has occurred.
         <a href="." class="reload">Reload</a>
-        <span class="dismiss">🗙</span>
     </div>
     <script src="_framework/blazor.webassembly#[.{fingerprint}].js"></script>
 </body>
-
 </html>

@@ -1,2 +1,35 @@
 @page "/"
-<h1>MyResume</h1>
+@using System.Text.Json
+@inject ICvSource CvSource
+
+<PageTitle>@(_cv?.Profile.Name ?? "CV")</PageTitle>
+
+@if (_error is not null)
+{
+    <p class="status status--error" role="alert">@_error</p>
+}
+else if (_cv is null)
+{
+    <p class="status" aria-busy="true">Loading CV…</p>
+}
+else
+{
+    <h1>@_cv.Profile.Name</h1>
+}
+
+@code {
+    private Cv? _cv;
+    private string? _error;
+
+    protected override async Task OnInitializedAsync()
+    {
+        try
+        {
+            _cv = await CvSource.LoadAsync();
+        }
+        catch (Exception ex) when (ex is HttpRequestException or JsonException or InvalidOperationException)
+        {
+            _error = "The CV data could not be loaded. Please refresh the page to try again.";
+        }
+    }
+}
