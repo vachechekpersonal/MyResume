@@ -1,0 +1,74 @@
+@implements IDisposable
+@inject SkillSelection Selection
+@inject TimeProvider Clock
+
+@if (Experience.Kind == ExperienceKind.CareerBreak)
+{
+    <li class="entry entry--break">
+        <span class="entry__period">@Experience.Period.Format()</span>
+        <span class="entry__break-label">@Experience.Company <span aria-hidden="true">·</span> @Experience.Role</span>
+    </li>
+}
+else
+{
+    <li class="entry @(IsMatch ? null : "entry--dimmed")">
+        <button type="button"
+                class="entry__toggle"
+                aria-expanded="@(_expanded ? "true" : "false")"
+                aria-controls="@_bodyId"
+                @onclick="Toggle">
+            <span class="entry__period">
+                @Experience.Period.Format()
+                <span class="entry__duration">(@Experience.Period.Duration(Today))</span>
+            </span>
+            <span class="entry__role">@Experience.Role</span>
+            <span class="entry__company">@Experience.Company <span aria-hidden="true">·</span> @Experience.Location</span>
+            <svg class="entry__chevron" aria-hidden="true" width="20" height="20" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8l4 4 4-4" /></svg>
+        </button>
+        <div id="@_bodyId" class="entry__body @(_expanded ? null : "entry__body--collapsed")">
+            <ul class="entry__highlights">
+                @foreach (var highlight in Experience.Highlights)
+                {
+                    <li>@highlight</li>
+                }
+            </ul>
+            <ul class="entry__tags" role="list" aria-label="Skills used">
+                @foreach (var skill in Experience.Skills)
+                {
+                    <li class="tag @(Selection.IsSelected(skill) ? "tag--hit" : null)">@skill</li>
+                }
+            </ul>
+        </div>
+    </li>
+}
+
+@code {
+    private readonly string _bodyId = $"entry-{Guid.NewGuid():N}";
+    private bool _expanded;
+
+    [Parameter, EditorRequired] public Experience Experience { get; set; } = default!;
+    [Parameter] public bool InitiallyExpanded { get; set; }
+
+    private DateOnly Today => DateOnly.FromDateTime(Clock.GetUtcNow().UtcDateTime);
+    private bool IsMatch => ExperienceFilter.Matches(Experience, Selection.Selected);
+
+    protected override void OnInitialized()
+    {
+        _expanded = InitiallyExpanded;
+        Selection.Changed += OnSelectionChanged;
+    }
+
+    private void Toggle() => _expanded = !_expanded;
+
+    private void OnSelectionChanged() => _ = InvokeAsync(() =>
+    {
+        if (Selection.IsActive)
+        {
+            _expanded = IsMatch;
+        }
+
+        StateHasChanged();
+    });
+
+    public void Dispose() => Selection.Changed -= OnSelectionChanged;
+}

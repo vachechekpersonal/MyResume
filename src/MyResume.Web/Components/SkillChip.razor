@@ -1,0 +1,21 @@
+@implements IDisposable
+@inject SkillSelection Selection
+
+<button type="button"
+        class="chip @(IsSelected ? "chip--selected" : null)"
+        aria-pressed="@(IsSelected ? "true" : "false")"
+        @onclick="() => Selection.Toggle(Skill)">
+    @Skill
+</button>
+
+@code {
+    [Parameter, EditorRequired] public string Skill { get; set; } = string.Empty;
+
+    private bool IsSelected => Selection.IsSelected(Skill);
+
+    protected override void OnInitialized() => Selection.Changed += OnSelectionChanged;
+
+    public void Dispose() => Selection.Changed -= OnSelectionChanged;
+
+    private void OnSelectionChanged() => _ = InvokeAsync(StateHasChanged);
+}

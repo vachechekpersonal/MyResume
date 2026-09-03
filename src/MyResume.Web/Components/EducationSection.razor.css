@@ -1,0 +1,26 @@
+.qualifications { list-style: none; display: grid; gap: var(--space-3); }
+
+.qualification {
+  display: grid;
+  grid-template-columns: 8.5rem 1fr;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border: 1px solid var(--colour-border);
+  border-radius: var(--radius-md);
+  background: var(--colour-surface);
+}
+
+.qualification__period {
+  color: var(--colour-text-muted);
+  font-size: 0.875rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.qualification__title { font-weight: 600; }
+
+.qualification__institution,
+.qualification__note { color: var(--colour-text-muted); font-size: 0.9375rem; }
+
+@media (max-width: 30rem) {
+  .qualification { grid-template-columns: 1fr; gap: var(--space-1); }
+}

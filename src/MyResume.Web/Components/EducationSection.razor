@@ -1,0 +1,26 @@
+<section id="education" aria-labelledby="education-heading">
+    <h2 id="education-heading">Education &amp; Certifications</h2>
+    <ul class="qualifications" role="list">
+        @foreach (var qualification in Qualifications)
+        {
+            <li class="qualification">
+                <span class="qualification__period">@qualification.Period</span>
+                <div>
+                    <p class="qualification__title">@qualification.Title</p>
+                    @if (qualification.Institution is { Length: > 0 } institution)
+                    {
+                        <p class="qualification__institution">@institution</p>
+                    }
+                    @if (qualification.Note is { Length: > 0 } note)
+                    {
+                        <p class="qualification__note">@note</p>
+                    }
+                </div>
+            </li>
+        }
+    </ul>
+</section>
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<Qualification> Qualifications { get; set; } = [];
+}

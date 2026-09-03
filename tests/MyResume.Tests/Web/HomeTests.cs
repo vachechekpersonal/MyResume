@@ -41,12 +41,39 @@ public sealed class HomeTests : BunitContext
     }
 
     [Fact]
-    public void Renders_profile_name_when_loaded()
+    public void Renders_header_profile_and_footer_when_loaded()
     {
         Services.AddSingleton<ICvSource>(FakeCvSource.Returning(TestData.Cv()));
 
         var cut = Render<Home>();
 
-        cut.WaitForAssertion(() => Assert.Contains("Test Person", cut.Find("h1").TextContent, StringComparison.Ordinal));
+        cut.WaitForAssertion(() =>
+        {
+            Assert.Equal("Test Person", cut.Find("header h1").TextContent);
+            Assert.Contains("A summary.", cut.Find("#about").TextContent, StringComparison.Ordinal);
+            var link = cut.Find("#about a");
+            Assert.Equal("https://example.com/in/test", link.GetAttribute("href"));
+            Assert.Equal("noopener noreferrer", link.GetAttribute("rel"));
+            Assert.Contains("2026", cut.Find("footer").TextContent, StringComparison.Ordinal);
+        });
+    }
+
+    [Fact]
+    public void Renders_all_sections_when_loaded()
+    {
+        Services.AddSingleton<ICvSource>(FakeCvSource.Returning(TestData.Cv()));
+
+        var cut = Render<Home>();
+
+        cut.WaitForAssertion(() =>
+        {
+            foreach (var id in new[] { "about", "skills", "experience", "education", "languages" })
+            {
+                Assert.NotNull(cut.Find($"section#{id}"));
+            }
+
+            Assert.Contains("Azure Developer Associate", cut.Find("#education").TextContent, StringComparison.Ordinal);
+            Assert.Contains("English", cut.Find("#languages").TextContent, StringComparison.Ordinal);
+        });
     }
 }

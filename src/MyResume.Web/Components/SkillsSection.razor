@@ -1,0 +1,38 @@
+@implements IDisposable
+@inject SkillSelection Selection
+
+<section id="skills" aria-labelledby="skills-heading">
+    <div class="skills__header">
+        <h2 id="skills-heading">Skills</h2>
+        @if (Selection.IsActive)
+        {
+            <button type="button" class="clear no-print" @onclick="Selection.Clear">
+                Clear selection (@Selection.Selected.Count)
+            </button>
+        }
+    </div>
+    <p class="skills__hint no-print">Select one or more skills to highlight the roles where they were used.</p>
+
+    @foreach (var group in Groups)
+    {
+        <div class="skill-group" @key="group.Name">
+            <h3>@group.Name</h3>
+            <ul class="chips" role="list">
+                @foreach (var skill in group.Skills)
+                {
+                    <li @key="skill"><SkillChip Skill="@skill" /></li>
+                }
+            </ul>
+        </div>
+    }
+</section>
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<SkillGroup> Groups { get; set; } = [];
+
+    protected override void OnInitialized() => Selection.Changed += OnSelectionChanged;
+
+    public void Dispose() => Selection.Changed -= OnSelectionChanged;
+
+    private void OnSelectionChanged() => _ = InvokeAsync(StateHasChanged);
+}

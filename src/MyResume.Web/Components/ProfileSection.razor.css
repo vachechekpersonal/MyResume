@@ -1,0 +1,21 @@
+.lead { font-size: 1.0625rem; max-width: 65ch; color: var(--colour-text); }
+
+.links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-block-start: var(--space-4);
+  list-style: none;
+}
+
+.links a {
+  display: inline-block;
+  padding: var(--space-2) var(--space-4);
+  border: 1px solid var(--colour-border);
+  border-radius: var(--radius-pill);
+  background: var(--colour-surface);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.links a:hover { border-color: var(--colour-accent); }

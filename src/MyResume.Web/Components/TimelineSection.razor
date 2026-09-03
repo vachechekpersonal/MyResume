@@ -1,0 +1,39 @@
+@implements IDisposable
+@inject SkillSelection Selection
+
+<section id="experience" aria-labelledby="experience-heading">
+    <h2 id="experience-heading">Experience</h2>
+
+    @if (Selection.IsActive)
+    {
+        <p class="filter-summary no-print" role="status">
+            Showing <strong>@MatchCount of @RoleCount roles</strong> using @string.Join(", ", Selection.Selected).
+            <button type="button" class="filter-summary__clear" @onclick="Selection.Clear">Clear</button>
+        </p>
+    }
+
+    <ol class="timeline" role="list">
+        @foreach (var (index, experience) in Ordered.Index())
+        {
+            <TimelineEntry @key="experience" Experience="experience" InitiallyExpanded="index == 0" />
+        }
+    </ol>
+</section>
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<Experience> Experiences { get; set; } = [];
+
+    private IEnumerable<Experience> Ordered => Experiences.OrderByDescending(e => e.Period.Start);
+
+    private IEnumerable<Experience> Roles => Experiences.Where(e => e.Kind == ExperienceKind.Employment);
+
+    private int RoleCount => Roles.Count();
+
+    private int MatchCount => Roles.Count(e => ExperienceFilter.Matches(e, Selection.Selected));
+
+    protected override void OnInitialized() => Selection.Changed += OnSelectionChanged;
+
+    public void Dispose() => Selection.Changed -= OnSelectionChanged;
+
+    private void OnSelectionChanged() => _ = InvokeAsync(StateHasChanged);
+}

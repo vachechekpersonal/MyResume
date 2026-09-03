@@ -1,0 +1,13 @@
+<section id="languages" aria-labelledby="languages-heading">
+    <h2 id="languages-heading">Languages</h2>
+    <ul class="languages" role="list">
+        @foreach (var language in Languages)
+        {
+            <li>@language</li>
+        }
+    </ul>
+</section>
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<string> Languages { get; set; } = [];
+}

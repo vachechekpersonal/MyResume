@@ -1,0 +1,17 @@
+<section id="about" aria-labelledby="about-heading">
+    <h2 id="about-heading">Profile</h2>
+    <p class="lead">@Profile.Summary</p>
+    @if (Profile.Links.Count > 0)
+    {
+        <ul class="links" role="list">
+            @foreach (var link in Profile.Links)
+            {
+                <li><a href="@link.Url" target="_blank" rel="noopener noreferrer">@link.Label</a></li>
+            }
+        </ul>
+    }
+</section>
+
+@code {
+    [Parameter, EditorRequired] public Profile Profile { get; set; } = default!;
+}

@@ -14,7 +14,15 @@ else if (_cv is null)
 }
 else
 {
-    <h1>@_cv.Profile.Name</h1>
+    <Header Profile="_cv.Profile" />
+    <main>
+        <ProfileSection Profile="_cv.Profile" />
+        <SkillsSection Groups="_cv.SkillGroups" />
+        <TimelineSection Experiences="_cv.Experiences" />
+        <EducationSection Qualifications="_cv.Qualifications" />
+        <LanguagesSection Languages="_cv.Languages" />
+    </main>
+    <Footer Profile="_cv.Profile" />
 }
 
 @code {

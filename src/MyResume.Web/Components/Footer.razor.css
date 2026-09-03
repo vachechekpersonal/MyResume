@@ -1,0 +1,7 @@
+.site-footer {
+  margin-block-start: var(--space-12);
+  padding-block-start: var(--space-6);
+  border-block-start: 1px solid var(--colour-border);
+  color: var(--colour-text-muted);
+  font-size: 0.9rem;
+}

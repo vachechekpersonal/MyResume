@@ -1,0 +1,9 @@
+@inject TimeProvider Clock
+
+<footer class="site-footer">
+    <p>&copy; @Clock.GetUtcNow().Year @Profile.Name. Built with Blazor WebAssembly.</p>
+</footer>
+
+@code {
+    [Parameter, EditorRequired] public Profile Profile { get; set; } = default!;
+}
