@@ -14,7 +14,12 @@ else if (_cv is null)
 }
 else
 {
-    <Header Profile="_cv.Profile" />
+    <Header Profile="_cv.Profile">
+        <Actions>
+            <PrintButton />
+            <ThemeToggle />
+        </Actions>
+    </Header>
     <main>
         <ProfileSection Profile="_cv.Profile" />
         <SkillsSection Groups="_cv.SkillGroups" />

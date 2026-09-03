@@ -2,6 +2,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MyResume.Core.Data;
 using MyResume.Core.Filtering;
 using MyResume.Web.Pages;
+using MyResume.Web.Services;
 
 namespace MyResume.Tests.Web;
 
@@ -11,7 +12,20 @@ public sealed class HomeTests : BunitContext
     {
         JSInterop.Mode = JSRuntimeMode.Loose;
         Services.AddScoped<SkillSelection>();
+        Services.AddScoped<ThemeService>();
         Services.AddSingleton<TimeProvider>(FixedTimeProvider.September2026);
+    }
+
+    [Fact]
+    public void Print_button_invokes_window_print()
+    {
+        Services.AddSingleton<ICvSource>(FakeCvSource.Returning(TestData.Cv()));
+        var print = JSInterop.SetupVoid("window.print");
+
+        var cut = Render<Home>();
+        cut.WaitForElement("button[aria-label='Download as PDF']").Click();
+
+        print.VerifyInvoke("window.print");
     }
 
     [Fact]
