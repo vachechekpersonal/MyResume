@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/src/">
+    <Project Path="src/MyResume.Core/MyResume.Core.csproj" />
+    <Project Path="src/MyResume.Web/MyResume.Web.csproj" />
+  </Folder>
+  <Folder Name="/tests/">
+    <Project Path="tests/MyResume.Tests/MyResume.Tests.csproj" />
+  </Folder>
+</Solution>

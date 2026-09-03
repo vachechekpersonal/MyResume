@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <RootNamespace>MyResume.Core</RootNamespace>
+  </PropertyGroup>
+</Project>
