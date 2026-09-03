@@ -7,7 +7,8 @@ public static class ExperienceFilter
 {
     /// <summary>
     /// True when nothing is selected, or when <paramref name="experience"/> used at least one selected skill.
-    /// Career breaks never match an active filter.
+    /// Career breaks never match an active filter. String comparison follows the comparer of
+    /// <paramref name="selectedSkills"/>; <see cref="SkillSelection"/> supplies a case-insensitive set.
     /// </summary>
     public static bool Matches(Experience experience, IReadOnlySet<string> selectedSkills)
     {

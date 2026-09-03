@@ -20,7 +20,9 @@
             <ul class="chips" role="list">
                 @foreach (var skill in group.Skills)
                 {
-                    <li @key="skill"><SkillChip Skill="@skill" /></li>
+                    <li @key="skill">
+                        <SkillChip Skill="@skill" Selected="Selection.IsSelected(skill)" OnToggle="() => Selection.Toggle(skill)" />
+                    </li>
                 }
             </ul>
         </div>

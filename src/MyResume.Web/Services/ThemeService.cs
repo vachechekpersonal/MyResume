@@ -8,7 +8,11 @@ public static class Themes
     public const string Dark = "dark";
 }
 
-/// <summary>Owns the current colour theme and persists it through the <c>js/theme.js</c> module.</summary>
+/// <summary>
+/// Owns the current colour theme and persists it through the <c>js/theme.js</c> module.
+/// <see cref="InitialiseAsync"/> is called once at start-up (see <c>Program.cs</c>) so components
+/// always see the real theme on their first render.
+/// </summary>
 public sealed class ThemeService(IJSRuntime js) : IAsyncDisposable
 {
     private IJSObjectReference? _module;
@@ -17,12 +21,10 @@ public sealed class ThemeService(IJSRuntime js) : IAsyncDisposable
 
     public string Current { get; private set; } = Themes.Light;
 
-    public bool IsInitialised => _module is not null;
-
     public async Task InitialiseAsync()
     {
-        _module ??= await js.InvokeAsync<IJSObjectReference>("import", "./js/theme.js").ConfigureAwait(false);
-        Current = await _module.InvokeAsync<string>("getTheme").ConfigureAwait(false);
+        _module ??= await js.InvokeAsync<IJSObjectReference>("import", "./js/theme.js");
+        Current = await _module.InvokeAsync<string>("getTheme");
         Changed?.Invoke();
     }
 
@@ -30,11 +32,11 @@ public sealed class ThemeService(IJSRuntime js) : IAsyncDisposable
     {
         if (_module is null)
         {
-            await InitialiseAsync().ConfigureAwait(false);
+            throw new InvalidOperationException($"{nameof(InitialiseAsync)} must be called before toggling the theme.");
         }
 
         var next = Current == Themes.Dark ? Themes.Light : Themes.Dark;
-        await _module!.InvokeVoidAsync("setTheme", next).ConfigureAwait(false);
+        await _module.InvokeVoidAsync("setTheme", next);
         Current = next;
         Changed?.Invoke();
     }
@@ -43,7 +45,7 @@ public sealed class ThemeService(IJSRuntime js) : IAsyncDisposable
     {
         if (_module is not null)
         {
-            await _module.DisposeAsync().ConfigureAwait(false);
+            await _module.DisposeAsync();
         }
     }
 }

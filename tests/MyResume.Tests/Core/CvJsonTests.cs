@@ -26,18 +26,48 @@ public sealed class CvJsonTests
     }
 
     [Fact]
-    public void Json_uses_camel_case_and_string_enums()
+    public void Json_uses_camel_case_iso_dates_and_string_enums()
     {
-        var json = JsonSerializer.Serialize(TestData.CareerBreak(new DateOnly(2011, 4, 1), new DateOnly(2011, 10, 1)), CvJsonContext.Default.Experience);
+        var json = JsonSerializer.Serialize(TestData.Cv() with
+        {
+            Experiences = [TestData.CareerBreak(new DateOnly(2011, 4, 1), new DateOnly(2011, 10, 1))],
+        }, CvJsonContext.Default.Cv);
 
-        Assert.Contains("\"kind\": \"CareerBreak\"", json, StringComparison.Ordinal);
-        Assert.Contains("\"start\": \"2011-04-01\"", json, StringComparison.Ordinal);
+        Assert.Contains("\"kind\":\"CareerBreak\"", json, StringComparison.Ordinal);
+        Assert.Contains("\"start\":\"2011-04-01\"", json, StringComparison.Ordinal);
+        Assert.Contains("\"skillGroups\":", json, StringComparison.Ordinal);
     }
 
     [Fact]
-    public void AllSkills_flattens_groups()
+    public void Missing_required_member_is_rejected_at_load_time()
     {
-        Assert.Equal(["C#", "React", "Azure"], TestData.Cv().AllSkills);
+        // "highlights" omitted from the experience.
+        const string json = """
+            {
+              "profile": { "name": "A", "title": "B", "location": "C", "summary": "D", "links": [] },
+              "skillGroups": [],
+              "experiences": [
+                { "company": "X", "role": "Y", "location": "Z", "period": { "start": "2020-01-01", "end": null }, "skills": [] }
+              ],
+              "qualifications": [],
+              "languages": []
+            }
+            """;
+
+        Assert.Throws<JsonException>(() => JsonSerializer.Deserialize(json, CvJsonContext.Default.Cv));
+    }
+
+    [Fact]
+    public void Unknown_property_is_rejected_at_load_time()
+    {
+        const string json = """
+            {
+              "profile": { "name": "A", "title": "B", "location": "C", "summary": "D", "links": [], "phone": "no" },
+              "skillGroups": [], "experiences": [], "qualifications": [], "languages": []
+            }
+            """;
+
+        Assert.Throws<JsonException>(() => JsonSerializer.Deserialize(json, CvJsonContext.Default.Cv));
     }
 
     [Fact]
@@ -57,7 +87,7 @@ public sealed class CvJsonTests
     public void Every_experience_skill_tag_exists_in_skill_groups()
     {
         var cv = LoadRealCv();
-        var known = cv.AllSkills.ToHashSet(StringComparer.Ordinal);
+        var known = cv.SkillGroups.SelectMany(g => g.Skills).ToHashSet(StringComparer.Ordinal);
 
         var unknown = cv.Experiences.SelectMany(e => e.Skills).Where(s => !known.Contains(s)).Distinct().ToList();
 

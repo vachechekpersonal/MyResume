@@ -15,4 +15,9 @@ builder.Services.AddScoped<SkillSelection>();
 builder.Services.AddScoped<ThemeService>();
 builder.Services.AddSingleton(TimeProvider.System);
 
-await builder.Build().RunAsync().ConfigureAwait(false);
+var host = builder.Build();
+
+// Read the theme the pre-paint script applied so the first render already shows the right icon.
+await host.Services.GetRequiredService<ThemeService>().InitialiseAsync();
+
+await host.RunAsync();

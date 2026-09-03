@@ -1,43 +1,38 @@
-using Microsoft.Extensions.DependencyInjection;
-using MyResume.Core.Filtering;
 using MyResume.Web.Components;
 
 namespace MyResume.Tests.Web;
 
 public sealed class SkillChipTests : BunitContext
 {
-    private readonly SkillSelection _selection = new();
-
-    public SkillChipTests() => Services.AddSingleton(_selection);
-
     [Fact]
-    public void Renders_unpressed_by_default()
+    public void Renders_skill_name_and_pressed_state()
     {
-        var cut = Render<SkillChip>(p => p.Add(c => c.Skill, "Azure"));
+        var cut = Render<SkillChip>(p => p.Add(c => c.Skill, "Azure").Add(c => c.Selected, false));
 
         var button = cut.Find("button");
         Assert.Equal("Azure", button.TextContent.Trim());
         Assert.Equal("false", button.GetAttribute("aria-pressed"));
+        Assert.DoesNotContain("chip--selected", button.ClassName, StringComparison.Ordinal);
     }
 
     [Fact]
-    public void Click_toggles_selection_and_pressed_state()
+    public void Selected_chip_is_pressed_and_styled()
     {
-        var cut = Render<SkillChip>(p => p.Add(c => c.Skill, "Azure"));
+        var cut = Render<SkillChip>(p => p.Add(c => c.Skill, "Azure").Add(c => c.Selected, true));
+
+        var button = cut.Find("button");
+        Assert.Equal("true", button.GetAttribute("aria-pressed"));
+        Assert.Contains("chip--selected", button.ClassName, StringComparison.Ordinal);
+    }
+
+    [Fact]
+    public void Click_raises_OnToggle()
+    {
+        var toggled = 0;
+        var cut = Render<SkillChip>(p => p.Add(c => c.Skill, "Azure").Add(c => c.OnToggle, () => toggled++));
 
         cut.Find("button").Click();
 
-        Assert.True(_selection.IsSelected("Azure"));
-        Assert.Equal("true", cut.Find("button").GetAttribute("aria-pressed"));
-    }
-
-    [Fact]
-    public void Re_renders_when_selection_changes_elsewhere()
-    {
-        var cut = Render<SkillChip>(p => p.Add(c => c.Skill, "Azure"));
-
-        _selection.Toggle("Azure");
-
-        cut.WaitForAssertion(() => Assert.Equal("true", cut.Find("button").GetAttribute("aria-pressed")));
+        Assert.Equal(1, toggled);
     }
 }

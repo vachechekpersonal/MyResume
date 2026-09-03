@@ -27,4 +27,16 @@ public sealed class DateRangeTests
 
         Assert.Equal(expected, range.Duration(Today));
     }
+
+    [Fact]
+    public void Duration_of_a_role_starting_in_the_future_is_clamped_to_one_month() =>
+        Assert.Equal("1 mo", new DateRange(new DateOnly(2027, 1, 1), null).Duration(Today));
+
+    [Fact]
+    public void End_before_start_is_rejected() =>
+        Assert.Throws<ArgumentOutOfRangeException>(() => new DateRange(new DateOnly(2021, 4, 1), new DateOnly(2021, 3, 1)));
+
+    [Fact]
+    public void Same_month_start_and_end_is_allowed() =>
+        Assert.Equal("1 mo", new DateRange(new DateOnly(2021, 4, 1), new DateOnly(2021, 4, 1)).Duration(Today));
 }

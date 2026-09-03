@@ -20,6 +20,27 @@ public sealed class SkillsSectionTests : BunitContext
     }
 
     [Fact]
+    public void Clicking_a_chip_toggles_the_shared_selection_and_presses_it()
+    {
+        var cut = RenderSection();
+
+        cut.FindAll("button.chip")[0].Click();
+
+        Assert.True(_selection.IsSelected("C#"));
+        Assert.Equal("true", cut.FindAll("button.chip")[0].GetAttribute("aria-pressed"));
+    }
+
+    [Fact]
+    public void Re_renders_when_selection_changes_elsewhere()
+    {
+        var cut = RenderSection();
+
+        _selection.Toggle("Azure");
+
+        cut.WaitForAssertion(() => Assert.Equal("true", cut.Find("button.chip[aria-pressed='true']").GetAttribute("aria-pressed")));
+    }
+
+    [Fact]
     public void Clear_button_appears_only_when_selection_is_active()
     {
         var cut = RenderSection();

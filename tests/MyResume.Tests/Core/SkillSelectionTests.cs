@@ -27,6 +27,14 @@ public sealed class SkillSelectionTests
     }
 
     [Fact]
+    public void Toggle_rejects_blank_skill()
+    {
+        var selection = new SkillSelection();
+
+        Assert.Throws<ArgumentException>(() => selection.Toggle(" "));
+    }
+
+    [Fact]
     public void Clear_removes_everything_and_raises_Changed_once()
     {
         var selection = new SkillSelection();

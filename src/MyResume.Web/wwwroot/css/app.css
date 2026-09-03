@@ -1,24 +1,31 @@
-/* ---------- Design tokens ---------- */
+/* ---------- Design tokens ----------
+   Every colour is declared once with light-dark(). The active scheme comes from `color-scheme`:
+   the OS preference by default, or the explicit choice stored in data-theme by js/theme.js. */
 :root {
+  color-scheme: light dark;
+
   --font-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   --font-mono: ui-monospace, "Cascadia Code", Consolas, monospace;
 
-  --colour-bg: #f8fafc;
-  --colour-surface: #ffffff;
-  --colour-surface-muted: #f1f5f9;
-  --colour-border: #e2e8f0;
-  --colour-text: #0f172a;
-  --colour-text-muted: #475569;
-  --colour-accent: #0f766e;
-  --colour-accent-contrast: #ffffff;
-  --colour-accent-soft: #ccfbf1;
-  --colour-focus: #2563eb;
-  --colour-danger: #b91c1c;
+  --colour-bg: light-dark(#f8fafc, #0b1120);
+  --colour-surface: light-dark(#ffffff, #111827);
+  --colour-surface-muted: light-dark(#f1f5f9, #1f2937);
+  --colour-border: light-dark(#e2e8f0, #334155);
+  --colour-text: light-dark(#0f172a, #e5e7eb);
+  --colour-text-muted: light-dark(#475569, #9ca3af);
+  --colour-accent: light-dark(#0f766e, #2dd4bf);
+  --colour-accent-contrast: light-dark(#ffffff, #042f2e);
+  --colour-accent-soft: light-dark(#ccfbf1, #134e4a);
+  --colour-focus: light-dark(#2563eb, #60a5fa);
+  --colour-danger: light-dark(#b91c1c, #fca5a5);
+  --shadow-sm: light-dark(
+    0 1px 2px rgb(15 23 42 / 0.06), 0 1px 3px rgb(15 23 42 / 0.1),
+    0 1px 2px rgb(0 0 0 / 0.4)
+  );
 
   --radius-sm: 0.375rem;
   --radius-md: 0.75rem;
   --radius-pill: 999px;
-  --shadow-sm: 0 1px 2px rgb(15 23 42 / 0.06), 0 1px 3px rgb(15 23 42 / 0.1);
 
   --space-1: 0.25rem;
   --space-2: 0.5rem;
@@ -30,43 +37,10 @@
 
   --content-width: 72rem;
   --transition: 160ms ease;
-
-  color-scheme: light;
 }
 
-:root[data-theme="dark"] {
-  --colour-bg: #0b1120;
-  --colour-surface: #111827;
-  --colour-surface-muted: #1f2937;
-  --colour-border: #334155;
-  --colour-text: #e5e7eb;
-  --colour-text-muted: #9ca3af;
-  --colour-accent: #2dd4bf;
-  --colour-accent-contrast: #042f2e;
-  --colour-accent-soft: #134e4a;
-  --colour-focus: #60a5fa;
-  --colour-danger: #fca5a5;
-  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
-  color-scheme: dark;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    --colour-bg: #0b1120;
-    --colour-surface: #111827;
-    --colour-surface-muted: #1f2937;
-    --colour-border: #334155;
-    --colour-text: #e5e7eb;
-    --colour-text-muted: #9ca3af;
-    --colour-accent: #2dd4bf;
-    --colour-accent-contrast: #042f2e;
-    --colour-accent-soft: #134e4a;
-    --colour-focus: #60a5fa;
-    --colour-danger: #fca5a5;
-    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
-    color-scheme: dark;
-  }
-}
+:root[data-theme="light"] { color-scheme: light; }
+:root[data-theme="dark"] { color-scheme: dark; }
 
 /* ---------- Base ---------- */
 *, *::before, *::after { box-sizing: border-box; }
@@ -94,7 +68,7 @@ a:hover { text-decoration-thickness: 2px; }
 button { font: inherit; color: inherit; cursor: pointer; }
 svg { display: block; }
 
-:focus-visible { outline: 3px solid var(--colour-focus); outline-offset: 2px; border-radius: var(--radius-sm); }
+:focus-visible { outline: 3px solid var(--colour-focus); outline-offset: 2px; }
 
 section { margin-block-end: var(--space-12); }
 
@@ -141,7 +115,9 @@ section { margin-block-end: var(--space-12); }
 
 /* ---------- Print ---------- */
 @media print {
+  /* Force the light scheme whatever the OS or saved preference, then darken text for paper. */
   :root, :root[data-theme="dark"] {
+    color-scheme: light;
     --colour-bg: #fff;
     --colour-surface: #fff;
     --colour-surface-muted: #fff;
@@ -151,7 +127,6 @@ section { margin-block-end: var(--space-12); }
     --colour-accent: #0f766e;
     --colour-accent-soft: #fff;
     --shadow-sm: none;
-    color-scheme: light;
   }
   @page { margin: 15mm; }
   body { font-size: 10.5pt; }

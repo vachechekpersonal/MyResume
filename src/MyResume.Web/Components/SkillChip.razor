@@ -1,21 +1,13 @@
-@implements IDisposable
-@inject SkillSelection Selection
-
+@* Presentational: the parent owns selection state and passes it down. *@
 <button type="button"
-        class="chip @(IsSelected ? "chip--selected" : null)"
-        aria-pressed="@(IsSelected ? "true" : "false")"
-        @onclick="() => Selection.Toggle(Skill)">
+        class="chip @(Selected ? "chip--selected" : null)"
+        aria-pressed="@(Selected ? "true" : "false")"
+        @onclick="OnToggle">
     @Skill
 </button>
 
 @code {
     [Parameter, EditorRequired] public string Skill { get; set; } = string.Empty;
-
-    private bool IsSelected => Selection.IsSelected(Skill);
-
-    protected override void OnInitialized() => Selection.Changed += OnSelectionChanged;
-
-    public void Dispose() => Selection.Changed -= OnSelectionChanged;
-
-    private void OnSelectionChanged() => _ = InvokeAsync(StateHasChanged);
+    [Parameter] public bool Selected { get; set; }
+    [Parameter] public EventCallback OnToggle { get; set; }
 }

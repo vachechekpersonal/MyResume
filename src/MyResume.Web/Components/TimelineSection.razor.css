@@ -11,6 +11,8 @@
   background: var(--colour-accent-soft);
 }
 
+.filter-summary[hidden] { display: none; }
+
 .filter-summary__clear {
   padding: 0 var(--space-3);
   border: 1px solid var(--colour-accent);

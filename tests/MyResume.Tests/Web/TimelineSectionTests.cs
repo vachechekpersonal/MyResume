@@ -39,19 +39,39 @@ public sealed class TimelineSectionTests : BunitContext
     }
 
     [Fact]
-    public void Filter_summary_shows_match_count_and_clears()
+    public void Filter_summary_is_a_persistent_live_region_shown_only_when_active()
     {
         var cut = RenderSection(TestData.Cv().Experiences);
-        Assert.Empty(cut.FindAll("p.filter-summary"));
+        var summary = cut.Find("p.filter-summary[role=status]");
+        Assert.True(summary.HasAttribute("hidden"));
 
         _selection.Toggle("React");
 
         cut.WaitForAssertion(() =>
-            Assert.Contains("1 of 2 roles", cut.Find("p.filter-summary").TextContent, StringComparison.Ordinal));
+        {
+            summary = cut.Find("p.filter-summary");
+            Assert.False(summary.HasAttribute("hidden"));
+            Assert.Contains("1 of 2 roles", summary.TextContent, StringComparison.Ordinal);
+        });
+        Assert.Single(cut.FindAll("li.entry--dimmed"));
 
         cut.Find("p.filter-summary button").Click();
 
         Assert.False(_selection.IsActive);
+        Assert.True(cut.Find("p.filter-summary").HasAttribute("hidden"));
+        Assert.Empty(cut.FindAll("li.entry--dimmed"));
+    }
+
+    [Fact]
+    public void Selected_skills_are_listed_alphabetically()
+    {
+        var cut = RenderSection(TestData.Cv().Experiences);
+
+        _selection.Toggle("React");
+        _selection.Toggle("Azure");
+
+        cut.WaitForAssertion(() =>
+            Assert.Contains("using Azure, React", cut.Find("p.filter-summary").TextContent, StringComparison.Ordinal));
     }
 
     private IRenderedComponent<TimelineSection> RenderSection(IReadOnlyList<Experience> experiences) =>

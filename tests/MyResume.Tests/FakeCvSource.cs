@@ -5,30 +5,16 @@ namespace MyResume.Tests;
 
 internal sealed class FakeCvSource : ICvSource
 {
-    private readonly TaskCompletionSource<Cv> _result = new();
+    private readonly Task<Cv> _result;
 
-    private FakeCvSource()
-    {
-    }
+    private FakeCvSource(Task<Cv> result) => _result = result;
 
-    public static FakeCvSource Returning(Cv cv)
-    {
-        var source = new FakeCvSource();
-        source._result.SetResult(cv);
-        return source;
-    }
+    public static FakeCvSource Returning(Cv cv) => new(Task.FromResult(cv));
 
-    public static FakeCvSource Failing(Exception exception)
-    {
-        var source = new FakeCvSource();
-        source._result.SetException(exception);
-        return source;
-    }
+    public static FakeCvSource Failing(Exception exception) => new(Task.FromException<Cv>(exception));
 
-    /// <summary>Never completes until <see cref="Complete"/> is called – used to observe the loading state.</summary>
-    public static FakeCvSource Pending() => new();
+    /// <summary>Never completes – used to observe the loading state.</summary>
+    public static FakeCvSource Pending() => new(new TaskCompletionSource<Cv>().Task);
 
-    public void Complete(Cv cv) => _result.SetResult(cv);
-
-    public Task<Cv> LoadAsync(CancellationToken cancellationToken = default) => _result.Task;
+    public Task<Cv> LoadAsync(CancellationToken cancellationToken = default) => _result;
 }

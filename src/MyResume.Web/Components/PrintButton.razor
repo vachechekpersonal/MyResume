@@ -1,7 +1,7 @@
 @inject IJSRuntime Js
 
-<button type="button" class="icon-button" aria-label="Download as PDF" title="Download as PDF (opens the print dialogue)" @onclick="PrintAsync">
-    <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12" /><path d="M7 10l5 5 5-5" /><path d="M5 21h14" /></svg>
+<button type="button" class="icon-button" aria-label="Print or save as PDF" title="Print or save as PDF" @onclick="PrintAsync">
+    <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9V3h12v6" /><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" /><path d="M6 14h12v7H6z" /></svg>
 </button>
 
 @code {

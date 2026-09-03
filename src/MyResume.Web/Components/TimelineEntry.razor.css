@@ -2,7 +2,6 @@
   position: relative;
   padding-inline-start: var(--space-8);
   padding-block-end: var(--space-6);
-  transition: opacity var(--transition);
 }
 
 /* Vertical rule and marker dot */
@@ -29,8 +28,10 @@
 
 .entry:last-child::before { inset-block-end: auto; height: 1rem; }
 
-.entry--dimmed { opacity: 0.45; }
+/* Filtered-out roles recede (muted surface, no shadow, grey dot) but stay readable at full contrast. */
 .entry--dimmed::after { background: var(--colour-border); }
+.entry--dimmed .entry__toggle { background: var(--colour-surface-muted); border-color: transparent; box-shadow: none; }
+.entry--dimmed .entry__role { color: var(--colour-text-muted); font-weight: 600; }
 
 .entry__toggle {
   display: grid;
@@ -46,7 +47,7 @@
   background: var(--colour-surface);
   box-shadow: var(--shadow-sm);
   text-align: start;
-  transition: border-color var(--transition);
+  transition: border-color var(--transition), background-color var(--transition);
 }
 
 .entry__toggle:hover { border-color: var(--colour-accent); }
@@ -117,8 +118,9 @@
 
 @media print {
   .entry__body--collapsed { display: block; }
-  .entry--dimmed { opacity: 1; }
-  .entry__toggle { box-shadow: none; border-color: var(--colour-border); }
+  .entry--dimmed .entry__toggle { background: var(--colour-surface); border-color: var(--colour-border); }
+  .entry--dimmed .entry__role { color: var(--colour-text); font-weight: 700; }
+  .entry__toggle { box-shadow: none; }
   .entry__chevron { display: none; }
   .entry { break-inside: avoid; }
 }

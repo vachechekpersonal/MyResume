@@ -1,5 +1,3 @@
-@implements IDisposable
-@inject SkillSelection Selection
 @inject TimeProvider Clock
 
 @if (Experience.Kind == ExperienceKind.CareerBreak)
@@ -35,7 +33,7 @@ else
             <ul class="entry__tags" role="list" aria-label="Skills used">
                 @foreach (var skill in Experience.Skills)
                 {
-                    <li class="tag @(Selection.IsSelected(skill) ? "tag--hit" : null)">@skill</li>
+                    <li class="tag @(SelectedSkills.Contains(skill) ? "tag--hit" : null)">@skill</li>
                 }
             </ul>
         </div>
@@ -44,31 +42,36 @@ else
 
 @code {
     private readonly string _bodyId = $"entry-{Guid.NewGuid():N}";
+    private readonly HashSet<string> _lastSelection = new(StringComparer.OrdinalIgnoreCase);
     private bool _expanded;
 
     [Parameter, EditorRequired] public Experience Experience { get; set; } = default!;
+
+    /// <summary>The visitor's current skill selection; an empty set means no filter is active.</summary>
+    [Parameter, EditorRequired] public IReadOnlySet<string> SelectedSkills { get; set; } = new HashSet<string>();
+
     [Parameter] public bool InitiallyExpanded { get; set; }
 
     private DateOnly Today => DateOnly.FromDateTime(Clock.GetUtcNow().UtcDateTime);
-    private bool IsMatch => ExperienceFilter.Matches(Experience, Selection.Selected);
 
-    protected override void OnInitialized()
+    private bool IsMatch => ExperienceFilter.Matches(Experience, SelectedSkills);
+
+    protected override void OnInitialized() => _expanded = InitiallyExpanded;
+
+    protected override void OnParametersSet()
     {
-        _expanded = InitiallyExpanded;
-        Selection.Changed += OnSelectionChanged;
+        if (_lastSelection.SetEquals(SelectedSkills))
+        {
+            return;
+        }
+
+        _lastSelection.Clear();
+        _lastSelection.UnionWith(SelectedSkills);
+
+        // A change of filter overrides manual expansion: matches open, non-matches close,
+        // and clearing the filter returns to the initial layout.
+        _expanded = SelectedSkills.Count > 0 ? IsMatch : InitiallyExpanded;
     }
 
     private void Toggle() => _expanded = !_expanded;
-
-    private void OnSelectionChanged() => _ = InvokeAsync(() =>
-    {
-        if (Selection.IsActive)
-        {
-            _expanded = IsMatch;
-        }
-
-        StateHasChanged();
-    });
-
-    public void Dispose() => Selection.Changed -= OnSelectionChanged;
 }

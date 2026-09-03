@@ -12,24 +12,27 @@ public sealed class ThemeToggleTests : BunitContext
     {
         Services.AddScoped<ThemeService>();
         _module = JSInterop.SetupModule("./js/theme.js");
-        _module.Setup<string>("getTheme").SetResult(Themes.Light);
         _module.SetupVoid("setTheme", _ => true).SetVoidResult();
     }
 
     [Fact]
-    public void Offers_to_switch_to_dark_when_light()
+    public async Task Reflects_the_theme_read_at_start_up()
     {
+        _module.Setup<string>("getTheme").SetResult(Themes.Dark);
+        await InitialiseThemeAsync();
+
         var cut = Render<ThemeToggle>();
 
-        cut.WaitForAssertion(() =>
-            Assert.Equal("Switch to dark theme", cut.Find("button").GetAttribute("aria-label")));
+        Assert.Equal("Switch to light theme", cut.Find("button").GetAttribute("aria-label"));
     }
 
     [Fact]
-    public void Click_sets_dark_theme_via_js_and_updates_label()
+    public async Task Click_sets_dark_theme_via_js_and_updates_label()
     {
+        _module.Setup<string>("getTheme").SetResult(Themes.Light);
+        await InitialiseThemeAsync();
         var cut = Render<ThemeToggle>();
-        cut.WaitForAssertion(() => Assert.Equal("Switch to dark theme", cut.Find("button").GetAttribute("aria-label")));
+        Assert.Equal("Switch to dark theme", cut.Find("button").GetAttribute("aria-label"));
 
         cut.Find("button").Click();
 
@@ -40,4 +43,14 @@ public sealed class ThemeToggleTests : BunitContext
             Assert.Equal("Switch to light theme", cut.Find("button").GetAttribute("aria-label"));
         });
     }
+
+    [Fact]
+    public async Task Toggling_before_initialisation_is_a_programming_error()
+    {
+        var theme = Services.GetRequiredService<ThemeService>();
+
+        await Assert.ThrowsAsync<InvalidOperationException>(theme.ToggleAsync);
+    }
+
+    private Task InitialiseThemeAsync() => Services.GetRequiredService<ThemeService>().InitialiseAsync();
 }

@@ -1,5 +1,4 @@
 using Microsoft.Extensions.DependencyInjection;
-using MyResume.Core.Filtering;
 using MyResume.Core.Models;
 using MyResume.Web.Components;
 
@@ -10,13 +9,9 @@ public sealed class TimelineEntryTests : BunitContext
     private static readonly Experience Role =
         TestData.Role("Acme", "Senior Engineer", new DateOnly(2021, 4, 1), null, "C#", "Azure");
 
-    private readonly SkillSelection _selection = new();
+    private static readonly IReadOnlySet<string> Nothing = new HashSet<string>();
 
-    public TimelineEntryTests()
-    {
-        Services.AddSingleton(_selection);
-        Services.AddSingleton<TimeProvider>(FixedTimeProvider.September2026);
-    }
+    public TimelineEntryTests() => Services.AddSingleton<TimeProvider>(FixedTimeProvider.September2026);
 
     [Fact]
     public void Shows_period_duration_role_and_company()
@@ -66,14 +61,11 @@ public sealed class TimelineEntryTests : BunitContext
     {
         var cut = RenderEntry(Role);
 
-        _selection.Toggle("Azure");
+        Select(cut, "Azure");
 
-        cut.WaitForAssertion(() =>
-        {
-            Assert.Empty(cut.FindAll("li.entry--dimmed"));
-            Assert.Equal("true", cut.Find("button.entry__toggle").GetAttribute("aria-expanded"));
-            Assert.Equal("Azure", cut.Find("li.tag--hit").TextContent.Trim());
-        });
+        Assert.Empty(cut.FindAll("li.entry--dimmed"));
+        Assert.Equal("true", cut.Find("button.entry__toggle").GetAttribute("aria-expanded"));
+        Assert.Equal("Azure", cut.Find("li.tag--hit").TextContent.Trim());
     }
 
     [Fact]
@@ -81,13 +73,34 @@ public sealed class TimelineEntryTests : BunitContext
     {
         var cut = RenderEntry(Role, expanded: true);
 
-        _selection.Toggle("React");
+        Select(cut, "React");
 
-        cut.WaitForAssertion(() =>
-        {
-            Assert.NotNull(cut.Find("li.entry--dimmed"));
-            Assert.Equal("false", cut.Find("button.entry__toggle").GetAttribute("aria-expanded"));
-        });
+        Assert.NotNull(cut.Find("li.entry--dimmed"));
+        Assert.Equal("false", cut.Find("button.entry__toggle").GetAttribute("aria-expanded"));
+    }
+
+    [Fact]
+    public void Clearing_the_filter_restores_the_initial_expansion()
+    {
+        var cut = RenderEntry(Role, expanded: false);
+        Select(cut, "Azure");
+        Assert.Equal("true", cut.Find("button.entry__toggle").GetAttribute("aria-expanded"));
+
+        Select(cut);
+
+        Assert.Equal("false", cut.Find("button.entry__toggle").GetAttribute("aria-expanded"));
+        Assert.Empty(cut.FindAll("li.entry--dimmed"));
+    }
+
+    [Fact]
+    public void Re_render_with_unchanged_filter_keeps_manual_expansion()
+    {
+        var cut = RenderEntry(Role);
+        cut.Find("button.entry__toggle").Click();
+
+        Select(cut);
+
+        Assert.Equal("true", cut.Find("button.entry__toggle").GetAttribute("aria-expanded"));
     }
 
     [Fact]
@@ -101,5 +114,11 @@ public sealed class TimelineEntryTests : BunitContext
     }
 
     private IRenderedComponent<TimelineEntry> RenderEntry(Experience experience, bool expanded = false) =>
-        Render<TimelineEntry>(p => p.Add(c => c.Experience, experience).Add(c => c.InitiallyExpanded, expanded));
+        Render<TimelineEntry>(p => p
+            .Add(c => c.Experience, experience)
+            .Add(c => c.SelectedSkills, Nothing)
+            .Add(c => c.InitiallyExpanded, expanded));
+
+    private static void Select(IRenderedComponent<TimelineEntry> cut, params string[] skills) =>
+        cut.Render(p => p.Add(c => c.SelectedSkills, new HashSet<string>(skills, StringComparer.OrdinalIgnoreCase)));
 }

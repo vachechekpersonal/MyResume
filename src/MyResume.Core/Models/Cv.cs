@@ -5,7 +5,4 @@ public sealed record Cv(
     IReadOnlyList<SkillGroup> SkillGroups,
     IReadOnlyList<Experience> Experiences,
     IReadOnlyList<Qualification> Qualifications,
-    IReadOnlyList<string> Languages)
-{
-    public IEnumerable<string> AllSkills => SkillGroups.SelectMany(group => group.Skills);
-}
+    IReadOnlyList<string> Languages);

@@ -17,14 +17,6 @@
 
     protected override void OnInitialized() => Theme.Changed += OnThemeChanged;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender && !Theme.IsInitialised)
-        {
-            await Theme.InitialiseAsync();
-        }
-    }
-
     public void Dispose() => Theme.Changed -= OnThemeChanged;
 
     private void OnThemeChanged() => _ = InvokeAsync(StateHasChanged);

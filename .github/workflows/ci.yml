@@ -10,6 +10,11 @@ on:
 permissions:
   contents: read
 
+# Never run two Pages deployments at once; let the current one finish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
 jobs:
   build-test:
     runs-on: ubuntu-latest
@@ -20,13 +25,27 @@ jobs:
           global-json-file: global.json
       - run: dotnet restore
       - run: dotnet build --no-restore --configuration Release
-      - run: dotnet test --no-build --configuration Release
+      - run: dotnet test --no-build --configuration Release --report-trx --results-directory TestResults
+      - if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-results
+          path: TestResults
       - run: dotnet publish src/MyResume.Web --no-build --configuration Release --output publish
       - name: Prepare static site
         run: |
-          cp publish/wwwroot/index.html publish/wwwroot/404.html
-          touch publish/wwwroot/.nojekyll
-      - uses: actions/upload-pages-artifact@v3
+          set -euo pipefail
+          site=publish/wwwroot
+          cp "$site/index.html" "$site/404.html"
+          touch "$site/.nojekyll"
+          # Without a custom domain the site lives under /<repo>/ on github.io, so the base href must match.
+          if [ ! -f "$site/CNAME" ]; then
+            base="/${{ github.event.repository.name }}/"
+            sed -i "s|<base href=\"/\" />|<base href=\"$base\" />|" "$site/index.html" "$site/404.html"
+            echo "No CNAME found; base href set to $base"
+          fi
+      - if: github.event_name != 'pull_request'
+        uses: actions/upload-pages-artifact@v3
         with:
           path: publish/wwwroot
 

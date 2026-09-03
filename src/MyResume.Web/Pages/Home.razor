@@ -1,5 +1,6 @@
 @page "/"
 @using System.Text.Json
+@implements IDisposable
 @inject ICvSource CvSource
 
 <PageTitle>@(_cv?.Profile.Name ?? "CV")</PageTitle>
@@ -31,6 +32,7 @@ else
 }
 
 @code {
+    private readonly CancellationTokenSource _loading = new();
     private Cv? _cv;
     private string? _error;
 
@@ -38,11 +40,21 @@ else
     {
         try
         {
-            _cv = await CvSource.LoadAsync();
+            _cv = await CvSource.LoadAsync(_loading.Token);
         }
         catch (Exception ex) when (ex is HttpRequestException or JsonException or InvalidOperationException)
         {
             _error = "The CV data could not be loaded. Please refresh the page to try again.";
         }
+        catch (OperationCanceledException)
+        {
+            // The page was disposed while loading; nothing to show.
+        }
+    }
+
+    public void Dispose()
+    {
+        _loading.Cancel();
+        _loading.Dispose();
     }
 }

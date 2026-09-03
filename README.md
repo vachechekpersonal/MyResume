@@ -13,7 +13,7 @@ An interactive CV for Vache Chek, built as a small showcase of clean .NET engine
 | `src/MyResume.Web` | Blazor components, browser services (theme, data loading), styles. |
 | `tests/MyResume.Tests` | Core unit tests, bUnit component tests, and integrity tests for `cv.json`. |
 
-Dependencies flow one way: `Tests → Web → Core`. Package versions are managed centrally in
+Dependencies flow one way: `Web → Core`, and `Tests` references both. Package versions are managed centrally in
 `Directory.Packages.props`; build settings shared by every project live in `Directory.Build.props`.
 
 ## Run locally

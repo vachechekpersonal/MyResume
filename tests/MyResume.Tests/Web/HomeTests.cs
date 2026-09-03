@@ -23,7 +23,7 @@ public sealed class HomeTests : BunitContext
         var print = JSInterop.SetupVoid("window.print");
 
         var cut = Render<Home>();
-        cut.WaitForElement("button[aria-label='Download as PDF']").Click();
+        cut.WaitForElement("button[aria-label='Print or save as PDF']").Click();
 
         print.VerifyInvoke("window.print");
     }

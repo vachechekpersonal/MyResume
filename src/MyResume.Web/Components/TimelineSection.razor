@@ -4,18 +4,22 @@
 <section id="experience" aria-labelledby="experience-heading">
     <h2 id="experience-heading">Experience</h2>
 
-    @if (Selection.IsActive)
-    {
-        <p class="filter-summary no-print" role="status">
-            Showing <strong>@MatchCount of @RoleCount roles</strong> using @string.Join(", ", Selection.Selected).
+    @* Rendered permanently so assistive technology registers the live region before it first changes. *@
+    <p class="filter-summary no-print" role="status" hidden="@(!Selection.IsActive)">
+        @if (Selection.IsActive)
+        {
+            <span>Showing <strong>@MatchCount of @RoleCount roles</strong> using @SelectedSkillList.</span>
             <button type="button" class="filter-summary__clear" @onclick="Selection.Clear">Clear</button>
-        </p>
-    }
+        }
+    </p>
 
     <ol class="timeline" role="list">
         @foreach (var (index, experience) in Ordered.Index())
         {
-            <TimelineEntry @key="experience" Experience="experience" InitiallyExpanded="index == 0" />
+            <TimelineEntry @key="experience"
+                           Experience="experience"
+                           SelectedSkills="Selection.Selected"
+                           InitiallyExpanded="index == 0" />
         }
     </ol>
 </section>
@@ -30,6 +34,8 @@
     private int RoleCount => Roles.Count();
 
     private int MatchCount => Roles.Count(e => ExperienceFilter.Matches(e, Selection.Selected));
+
+    private string SelectedSkillList => string.Join(", ", Selection.Selected.Order(StringComparer.OrdinalIgnoreCase));
 
     protected override void OnInitialized() => Selection.Changed += OnSelectionChanged;
 

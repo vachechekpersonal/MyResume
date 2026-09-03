@@ -10,6 +10,6 @@ public sealed class HttpCvSource(HttpClient http) : ICvSource
     private const string Path = "data/cv.json";
 
     public async Task<Cv> LoadAsync(CancellationToken cancellationToken = default) =>
-        await http.GetFromJsonAsync(Path, CvJsonContext.Default.Cv, cancellationToken).ConfigureAwait(false)
+        await http.GetFromJsonAsync(Path, CvJsonContext.Default.Cv, cancellationToken)
         ?? throw new InvalidOperationException($"{Path} contained no CV document.");
 }
