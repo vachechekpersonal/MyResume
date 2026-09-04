@@ -3,7 +3,7 @@
 An interactive CV for Vache Chek, built as a small showcase of clean .NET engineering.
 
 - **Stack:** .NET 10, Blazor WebAssembly (standalone, static hosting), hand-written CSS, xUnit v3 + bUnit.
-- **Design spec:** `docs/superpowers/specs/2026-09-03-myresume-design.md`
+- **Design spec:** `docs/design.md`
 
 ## Structure
 

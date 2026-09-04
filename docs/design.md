@@ -5,7 +5,7 @@ Date: 3 September 2026
 ### Purpose
 A personal website that is an interactive version of Vache Chek's CV, hosted statically on a personal domain. It doubles as a portfolio piece, so the code itself must demonstrate clean, SOLID, well-tested, maintainable engineering at a deliberately small scale.
 
-### Decisions (from brainstorming, 3 Sep 2026)
+### Decisions (3 Sep 2026)
 | Topic | Decision |
 |---|---|
 | Hosting | Static files (GitHub Pages initially, custom domain later) → Blazor WebAssembly standalone |
