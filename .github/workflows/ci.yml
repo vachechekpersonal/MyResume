@@ -31,7 +31,7 @@ jobs:
         with:
           name: test-results
           path: TestResults
-      - run: dotnet publish src/MyResume.Web --no-build --configuration Release --output publish
+      - run: dotnet publish src/MyResume.Web --configuration Release --output publish
       - name: Prepare static site
         run: |
           set -euo pipefail
