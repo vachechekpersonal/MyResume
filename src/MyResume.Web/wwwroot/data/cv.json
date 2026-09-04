@@ -2,10 +2,17 @@
   "profile": {
     "name": "Vache Chek",
     "title": "Senior Software Engineer",
-    "location": "Reading, UK",
+    "location": "Cambridge, UK",
     "summary": "I am a highly dedicated and driven professional with a background in software development. Over the course of my career I have honed my knowledge and skills through diverse experiences across various organisations. As a self-learner I remain adaptable and astute, always seeking opportunities to further develop my expertise in software development. My enthusiastic nature allows me to thrive in challenging and rewarding environments.",
     "links": [
-      { "label": "LinkedIn", "url": "https://uk.linkedin.com/in/vache-chek" }
+      {
+        "label": "LinkedIn",
+        "url": "https://www.linkedin.com/in/vache-chek/"
+      },
+      {
+        "label": "GitHub",
+        "url": "https://github.com/vachechek"
+      }
     ]
   },
   "skillGroups": [
@@ -147,5 +154,5 @@
     { "title": "Associate Degree, Computer Software", "institution": "Tabarestan University", "period": "2002 – 2005", "note": "Assessed as comparable to a BTEC National Diploma (UK NARIC)." },
     { "title": "ASP 3 Course", "institution": "Cavendish College", "period": "2002", "note": null }
   ],
-  "languages": ["Armenian", "Farsi", "English"]
+  "languages": ["Armenian", "Persian", "English"]
 }
