@@ -76,11 +76,11 @@ public sealed class CvJsonTests
         var cv = LoadRealCv();
 
         Assert.Equal("Vache Chek", cv.Profile.Name);
-        Assert.Single(cv.Profile.Links);
-        Assert.Equal("https://uk.linkedin.com/in/vache-chek", cv.Profile.Links[0].Url);
+        Assert.Equal(["LinkedIn", "GitHub"], cv.Profile.Links.Select(link => link.Label));
+        Assert.Equal("https://www.linkedin.com/in/vache-chek/", cv.Profile.Links[0].Url);
         Assert.Equal(9, cv.Experiences.Count);
         Assert.Equal(5, cv.Qualifications.Count);
-        Assert.Equal(["Armenian", "Farsi", "English"], cv.Languages);
+        Assert.Equal(["Armenian", "Persian", "English"], cv.Languages);
     }
 
     [Fact]
