@@ -82,7 +82,7 @@ public sealed class HomeTests : BunitContext
 
         cut.WaitForAssertion(() =>
         {
-            Assert.Equal("React", cut.Find("button.chip[aria-pressed='true']").TextContent.Trim());
+            Assert.StartsWith("React", cut.Find("button.chip[aria-pressed='true']").TextContent.Trim(), StringComparison.Ordinal);
             Assert.Contains("1 of 2 roles", cut.Find("p.filter-summary").TextContent, StringComparison.Ordinal);
         });
     }

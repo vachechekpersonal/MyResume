@@ -2,12 +2,24 @@
 <button type="button"
         class="chip @(Selected ? "chip--selected" : null)"
         aria-pressed="@(Selected ? "true" : "false")"
+        title="@Title"
         @onclick="OnToggle">
     @Skill
+    @if (Detail is { Length: > 0 })
+    {
+        <span class="chip__detail">@Detail</span>
+    }
 </button>
 
 @code {
     [Parameter, EditorRequired] public string Skill { get; set; } = string.Empty;
     [Parameter] public bool Selected { get; set; }
+
+    /// <summary>Short secondary text, e.g. "17 yrs".</summary>
+    [Parameter] public string? Detail { get; set; }
+
+    /// <summary>Tooltip, e.g. "Used in 5 roles over 17 yrs".</summary>
+    [Parameter] public string? Title { get; set; }
+
     [Parameter] public EventCallback OnToggle { get; set; }
 }

@@ -31,23 +31,15 @@ public readonly record struct DateRange
         MonthYear(Start) + Dash + (End is { } end ? MonthYear(end) : "Present");
 
     /// <summary>Whole months, counting both the first and last month, e.g. "1 yr 6 mos". Never less than one month.</summary>
-    public string Duration(DateOnly today)
-    {
-        var end = End ?? today;
-        var totalMonths = Math.Max(1, ((end.Year - Start.Year) * 12) + end.Month - Start.Month + 1);
-        var years = totalMonths / 12;
-        var months = totalMonths % 12;
+    public string Duration(DateOnly today) => DurationFormat.Exact(MonthCount(today));
 
-        return (years, months) switch
-        {
-            (0, _) => Plural(months, "mo"),
-            (_, 0) => Plural(years, "yr"),
-            _ => $"{Plural(years, "yr")} {Plural(months, "mo")}",
-        };
-    }
+    /// <summary>Inclusive number of calendar months covered, clamped to at least one. Open ranges end at <paramref name="today"/>.</summary>
+    public int MonthCount(DateOnly today) => Math.Max(1, LastMonthIndex(today) - MonthIndex(Start) + 1);
+
+    /// <summary>Months since year 0, so ranges can be compared and merged arithmetically.</summary>
+    internal static int MonthIndex(DateOnly date) => (date.Year * 12) + date.Month - 1;
+
+    internal int LastMonthIndex(DateOnly today) => MonthIndex(End ?? today);
 
     private static string MonthYear(DateOnly date) => date.ToString("MMM yyyy", CultureInfo.InvariantCulture);
-
-    private static string Plural(int count, string unit) =>
-        string.Create(CultureInfo.InvariantCulture, $"{count} {unit}{(count == 1 ? string.Empty : "s")}");
 }

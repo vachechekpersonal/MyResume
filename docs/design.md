@@ -22,6 +22,7 @@ A personal website that is an interactive version of Vache Chek's CV, hosted sta
 - **Tests**: Core logic tested without Blazor; components tested with bUnit against a fake `ICvSource`; real `cv.json` validated against the model.
 
 ### Behaviour
+- Skill chips show derived experience ("C# · 6 yrs"): the union of the periods of the roles that list the skill, so overlapping roles are not double-counted (`SkillExperienceCalculator`). Chips sort by it within each group; the tooltip gives the role count and exact span.
 - Skill filter: clicking chips toggles membership in `SkillSelection`. The selection is mirrored into the `?skills=` query parameter (canonical order, `replace` navigation so Back is not polluted) and read from it on load, so a filtered view is shareable by URL. A role matches when it uses **any** selected skill (case-insensitive). Matching roles are expanded and full-strength; non-matching roles collapse and dim. A summary line shows "n of m roles" and a Clear button. Zero matches is allowed and honest.
 - Timeline: newest first, vertical line, first role expanded by default, others collapsed. Career break shown as a quiet marker, not a card. Each entry shows period, computed duration, role, company, location, highlights, and skill tags (selected tags highlighted).
 - Theme: inline script in `index.html` applies the saved theme before first paint. Falls back to `prefers-color-scheme`. Toggle persists to `localStorage`.

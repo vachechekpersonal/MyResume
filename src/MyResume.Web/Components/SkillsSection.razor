@@ -1,5 +1,6 @@
 @implements IDisposable
 @inject SkillSelection Selection
+@inject TimeProvider Clock
 
 <section id="skills" aria-labelledby="skills-heading">
     <div class="skills__header">
@@ -11,17 +12,22 @@
             </button>
         }
     </div>
-    <p class="skills__hint no-print">Select one or more skills to highlight the roles where they were used.</p>
+    <p class="skills__hint no-print">Select one or more skills to highlight the roles where they were used. Figures are years of use across roles.</p>
 
     @foreach (var group in Groups)
     {
         <div class="skill-group" @key="group.Name">
             <h3>@group.Name</h3>
             <ul class="chips" role="list">
-                @foreach (var skill in group.Skills)
+                @foreach (var skill in Ordered(group))
                 {
+                    var experience = _experience.GetValueOrDefault(skill);
                     <li @key="skill">
-                        <SkillChip Skill="@skill" Selected="Selection.IsSelected(skill)" OnToggle="() => Selection.Toggle(skill)" />
+                        <SkillChip Skill="@skill"
+                                   Selected="Selection.IsSelected(skill)"
+                                   Detail="@experience?.Summary"
+                                   Title="@Tooltip(experience)"
+                                   OnToggle="() => Selection.Toggle(skill)" />
                     </li>
                 }
             </ul>
@@ -30,11 +36,28 @@
 </section>
 
 @code {
+    private IReadOnlyDictionary<string, SkillExperience> _experience = new Dictionary<string, SkillExperience>();
+
     [Parameter, EditorRequired] public IReadOnlyList<SkillGroup> Groups { get; set; } = [];
+
+    /// <summary>Roles used to derive years of experience per chip. Optional so the section can render without them.</summary>
+    [Parameter] public IReadOnlyList<Experience> Experiences { get; set; } = [];
 
     protected override void OnInitialized() => Selection.Changed += OnSelectionChanged;
 
+    protected override void OnParametersSet() =>
+        _experience = SkillExperienceCalculator.Compute(Experiences, DateOnly.FromDateTime(Clock.GetUtcNow().UtcDateTime));
+
     public void Dispose() => Selection.Changed -= OnSelectionChanged;
+
+    /// <summary>Most experience first; ties keep the CV's own order.</summary>
+    private IEnumerable<string> Ordered(SkillGroup group) =>
+        group.Skills.OrderByDescending(skill => _experience.GetValueOrDefault(skill)?.Months ?? 0);
+
+    private static string? Tooltip(SkillExperience? experience) =>
+        experience is null
+            ? null
+            : $"Used in {experience.RoleCount} {(experience.RoleCount == 1 ? "role" : "roles")} over {DurationFormat.Exact(experience.Months)}";
 
     private void OnSelectionChanged() => _ = InvokeAsync(StateHasChanged);
 }
