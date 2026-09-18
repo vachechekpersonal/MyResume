@@ -12,7 +12,7 @@ public sealed class PrerenderTests
     [Fact]
     public async Task Renders_the_real_cv_to_static_markup_with_every_section()
     {
-        var html = await PageRenderer.RenderHomeAsync(new FileCvSource(RealCvPath), FixedTimeProvider.September2026);
+        var html = await PageRenderer.RenderHomeAsync(new FileCvSource(RealCvPath), FixedTimeProvider.September2026, Site);
 
         Assert.Matches("<h1[^>]*>Vache Chek</h1>", html);
         foreach (var id in new[] { "about", "skills", "experience", "education", "languages" })
@@ -27,7 +27,7 @@ public sealed class PrerenderTests
     [Fact]
     public async Task Rendered_markup_keeps_css_isolation_scopes()
     {
-        var html = await PageRenderer.RenderHomeAsync(FakeCvSource.Returning(TestData.Cv()), FixedTimeProvider.September2026);
+        var html = await PageRenderer.RenderHomeAsync(FakeCvSource.Returning(TestData.Cv()), FixedTimeProvider.September2026, Site);
 
         // Scope attributes look like b-abc123xyz and are what MyResume.Web.styles.css targets.
         Assert.Matches("""<section id="skills"[^>]* b-[a-z0-9]+>""", html);
@@ -102,7 +102,7 @@ public sealed class PrerenderTests
         var index = await File.ReadAllTextAsync(Path.Combine(AppContext.BaseDirectory, "wwwroot", "index.html"), Xunit.TestContext.Current.CancellationToken);
         var source = new FileCvSource(RealCvPath);
         var cv = await source.LoadAsync(Xunit.TestContext.Current.CancellationToken);
-        var app = await PageRenderer.RenderHomeAsync(source, FixedTimeProvider.September2026);
+        var app = await PageRenderer.RenderHomeAsync(source, FixedTimeProvider.September2026, Site);
 
         var html = IndexHtml.Inject(index, app, ShareMetadata.JsonLd(cv, Site));
 

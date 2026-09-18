@@ -5,6 +5,7 @@
 An interactive CV for Vache Chek, built as a small showcase of clean .NET engineering.
 
 - **Stack:** .NET 10, Blazor WebAssembly (standalone, static hosting), hand-written CSS, xUnit v3 + bUnit.
+- **Share a filtered view:** append `?skills=Azure,C%23` to the URL; the selection is kept in the query string.
 - **Design spec:** `docs/design.md`
 
 ## Structure

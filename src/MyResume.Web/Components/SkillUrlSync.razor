@@ -1,0 +1,40 @@
+@* Renders nothing. Keeps the `skills` query parameter and the shared SkillSelection in step, so a filtered view
+   can be shared by URL. Unknown skills in the URL are ignored so a stale link cannot select a chip that no longer exists. *@
+@implements IDisposable
+@inject NavigationManager Navigation
+@inject SkillSelection Selection
+
+@code {
+    [Parameter, EditorRequired] public IReadOnlyList<SkillGroup> Groups { get; set; } = [];
+
+    protected override void OnInitialized()
+    {
+        ApplyUrlToSelection();
+        Selection.Changed += ApplySelectionToUrl;
+    }
+
+    public void Dispose() => Selection.Changed -= ApplySelectionToUrl;
+
+    private void ApplyUrlToSelection()
+    {
+        var query = System.Web.HttpUtility.ParseQueryString(new Uri(Navigation.Uri).Query);
+        var requested = SkillQuery.Parse(query[SkillQuery.ParameterName]);
+        if (requested.Count == 0)
+        {
+            return;
+        }
+
+        // Canonical spelling comes from the CV, so "azure" in a hand-typed URL selects and is written back as "Azure".
+        var known = Groups.SelectMany(g => g.Skills).ToDictionary(s => s, StringComparer.OrdinalIgnoreCase);
+        Selection.ReplaceWith(requested.Select(s => known.GetValueOrDefault(s)).OfType<string>());
+    }
+
+    private void ApplySelectionToUrl()
+    {
+        var target = Navigation.GetUriWithQueryParameter(SkillQuery.ParameterName, SkillQuery.Format(Selection.Selected));
+        if (target != Navigation.Uri)
+        {
+            Navigation.NavigateTo(target, replace: true);
+        }
+    }
+}

@@ -11,7 +11,7 @@ var indexPath = Path.Combine(wwwroot, "index.html");
 var cvSource = new FileCvSource(Path.Combine(wwwroot, "data", "cv.json"));
 
 var cv = await cvSource.LoadAsync();
-var app = await PageRenderer.RenderHomeAsync(cvSource, TimeProvider.System);
+var app = await PageRenderer.RenderHomeAsync(cvSource, TimeProvider.System, siteUrl);
 var head = ShareMetadata.OpenGraphTags(cv.Profile, siteUrl) + Environment.NewLine + "    " + ShareMetadata.JsonLd(cv, siteUrl);
 
 var html = IndexHtml.Inject(await File.ReadAllTextAsync(indexPath), app, head);

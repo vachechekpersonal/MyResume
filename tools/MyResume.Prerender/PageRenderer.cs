@@ -16,15 +16,17 @@ namespace MyResume.Prerender;
 /// </summary>
 public static class PageRenderer
 {
-    public static async Task<string> RenderHomeAsync(ICvSource cvSource, TimeProvider clock)
+    public static async Task<string> RenderHomeAsync(ICvSource cvSource, TimeProvider clock, Uri siteUrl)
     {
         ArgumentNullException.ThrowIfNull(cvSource);
         ArgumentNullException.ThrowIfNull(clock);
+        ArgumentNullException.ThrowIfNull(siteUrl);
 
         var services = new ServiceCollection();
         services.AddLogging();
         services.AddSingleton(cvSource);
         services.AddSingleton(clock);
+        services.AddSingleton<NavigationManager>(new StaticNavigationManager(siteUrl));
         services.AddSingleton<IJSRuntime, NoJSRuntime>();
         services.AddScoped<SkillSelection>();
         services.AddScoped<ThemeService>();

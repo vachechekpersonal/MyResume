@@ -73,6 +73,21 @@ public sealed class HomeTests : BunitContext
     }
 
     [Fact]
+    public void Deep_link_selects_chips_and_filters_roles()
+    {
+        Services.AddSingleton<ICvSource>(FakeCvSource.Returning(TestData.Cv()));
+        Services.GetRequiredService<Microsoft.AspNetCore.Components.NavigationManager>().NavigateTo("/?skills=React");
+
+        var cut = Render<Home>();
+
+        cut.WaitForAssertion(() =>
+        {
+            Assert.Equal("React", cut.Find("button.chip[aria-pressed='true']").TextContent.Trim());
+            Assert.Contains("1 of 2 roles", cut.Find("p.filter-summary").TextContent, StringComparison.Ordinal);
+        });
+    }
+
+    [Fact]
     public void Renders_all_sections_when_loaded()
     {
         Services.AddSingleton<ICvSource>(FakeCvSource.Returning(TestData.Cv()));

@@ -28,6 +28,22 @@ public sealed class SkillSelection
         Changed?.Invoke();
     }
 
+    /// <summary>Replaces the whole selection, raising <see cref="Changed"/> once and only if something differs.</summary>
+    public void ReplaceWith(IEnumerable<string> skills)
+    {
+        ArgumentNullException.ThrowIfNull(skills);
+
+        var next = skills.Where(s => !string.IsNullOrWhiteSpace(s)).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        if (_selected.SetEquals(next))
+        {
+            return;
+        }
+
+        _selected.Clear();
+        _selected.UnionWith(next);
+        Changed?.Invoke();
+    }
+
     public void Clear()
     {
         if (_selected.Count == 0)

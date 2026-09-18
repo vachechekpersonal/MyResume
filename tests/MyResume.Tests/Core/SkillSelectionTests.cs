@@ -62,6 +62,33 @@ public sealed class SkillSelectionTests
     }
 
     [Fact]
+    public void ReplaceWith_swaps_the_selection_and_raises_Changed_once()
+    {
+        var selection = new SkillSelection();
+        selection.Toggle("C#");
+        var raised = 0;
+        selection.Changed += () => raised++;
+
+        selection.ReplaceWith(["Azure", "React", " "]);
+
+        Assert.Equal(["Azure", "React"], selection.Selected.Order());
+        Assert.Equal(1, raised);
+    }
+
+    [Fact]
+    public void ReplaceWith_an_equal_set_does_not_raise_Changed()
+    {
+        var selection = new SkillSelection();
+        selection.Toggle("C#");
+        var raised = 0;
+        selection.Changed += () => raised++;
+
+        selection.ReplaceWith(["c#"]);
+
+        Assert.Equal(0, raised);
+    }
+
+    [Fact]
     public void Toggle_raises_Changed()
     {
         var selection = new SkillSelection();
