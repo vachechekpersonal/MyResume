@@ -8,5 +8,6 @@
   </Folder>
   <Folder Name="/tests/">
     <Project Path="tests/MyResume.Tests/MyResume.Tests.csproj" />
+    <Project Path="tests/MyResume.E2E/MyResume.E2E.csproj" />
   </Folder>
 </Solution>

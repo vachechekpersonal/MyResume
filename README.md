@@ -16,6 +16,7 @@ An interactive CV for Vache Chek, built as a small showcase of clean .NET engine
 | `src/MyResume.Web` | Blazor components, browser services (theme, data loading), styles. |
 | `tools/MyResume.Prerender` | Build-time tool: renders `Home` to static HTML with `HtmlRenderer` and injects it, Open Graph tags and JSON-LD into the published `index.html`. |
 | `tests/MyResume.Tests` | Core unit tests, bUnit component tests, prerender tests, and integrity tests for `cv.json`. |
+| `tests/MyResume.E2E` | Playwright browser tests that drive the published site under its sub-path: prerendered content, filter, deep link, theme persistence, 404 routing, print layout. |
 
 Dependencies flow one way: `Web → Core`, `Prerender → Web`, and `Tests` references all three. Package versions are managed centrally in
 `Directory.Packages.props`; build settings shared by every project live in `Directory.Build.props`.
@@ -27,6 +28,13 @@ Dependencies flow one way: `Web → Core`, `Prerender → Web`, and `Tests` refe
 ## Test
 
     dotnet test
+
+The browser tests are skipped unless `MYRESUME_SITE` points at a published `wwwroot`. To run them locally:
+
+    dotnet publish src/MyResume.Web -c Release -o publish
+    dotnet run --project tools/MyResume.Prerender -c Release -- publish/wwwroot http://localhost/
+    pwsh tests/MyResume.E2E/bin/Release/net10.0/playwright.ps1 install chromium
+    MYRESUME_SITE=publish/wwwroot dotnet test tests/MyResume.E2E -c Release
 
 Tests run on Microsoft.Testing.Platform (opted in via `global.json`), which is required for xUnit v3 on the .NET 10 SDK.
 

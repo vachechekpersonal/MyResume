@@ -58,6 +58,18 @@ jobs:
             url="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
           fi
           dotnet run --project tools/MyResume.Prerender --configuration Release --no-build -- "$site" "$url"
+      - name: Browser tests against the published site
+        env:
+          MYRESUME_SITE: ${{ github.workspace }}/publish/wwwroot
+        run: |
+          set -euo pipefail
+          pwsh tests/MyResume.E2E/bin/Release/net10.0/playwright.ps1 install --with-deps chromium
+          dotnet test tests/MyResume.E2E --no-build --configuration Release --report-xunit-trx --results-directory TestResults
+      - if: always()
+        uses: actions/upload-artifact@v7
+        with:
+          name: e2e-results
+          path: TestResults
       - if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v5
         with:

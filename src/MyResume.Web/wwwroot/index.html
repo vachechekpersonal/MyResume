@@ -32,6 +32,10 @@
         An unhandled error has occurred.
         <a href="." class="reload">Reload</a>
     </div>
-    <script src="_framework/blazor.webassembly#[.{fingerprint}].js"></script>
+    <script src="_framework/blazor.webassembly#[.{fingerprint}].js" autostart="false"></script>
+    <script>
+        // Mark the document once the interactive app is running. Tests wait for it; CSS may key off it.
+        Blazor.start().then(function () { document.documentElement.dataset.blazor = "ready"; });
+    </script>
 </body>
 </html>

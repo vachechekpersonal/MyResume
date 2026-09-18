@@ -12,7 +12,7 @@ A personal website that is an interactive version of Vache Chek's CV, hosted sta
 | Content source | Transcribed from the original Word CV into `wwwroot/data/cv.json` |
 | Interactivity | Skill-chip filter that highlights matching roles; collapsible timeline entries; light/dark theme with persistence; print-to-PDF |
 | Contact | LinkedIn link only |
-| Tests/CI | xUnit + bUnit unit tests; GitHub Actions build/test/publish/deploy |
+| Tests/CI | xUnit + bUnit unit tests; Playwright browser tests against the published site; GitHub Actions build/test/publish/prerender/deploy |
 | Styling | Hand-written modern CSS, scoped per component, no framework |
 | Structure | `MyResume.Core` + `MyResume.Web` + `MyResume.Tests` |
 
