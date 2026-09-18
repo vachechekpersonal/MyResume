@@ -127,7 +127,7 @@ ipch/
 *.sap
 
 # Visual Studio Trace Files
-*.e2e
+# *.e2e removed: on case-insensitive file systems it hid tests/MyResume.E2E
 
 # TFS 2012 Local Workspace
 $tf/
