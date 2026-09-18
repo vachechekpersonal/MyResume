@@ -17,8 +17,8 @@
   },
   "skillGroups": [
     { "name": "Languages & Frameworks", "skills": ["C#", ".NET", "ASP.NET", "VB.NET", "TypeScript", "React", "JavaScript", "HTML & CSS", "Classic ASP", "VBScript", "Windows Forms"] },
-    { "name": "Cloud & DevOps", "skills": ["Azure", "AWS", "Kubernetes", "Service Fabric", "Azure DevOps", "Octopus Deploy", "Git", "TFS", "Visual Studio"] },
-    { "name": "Integration & Messaging", "skills": ["REST APIs", "Web Services", "Service Bus", "SQS", "Azure Storage", "Bing Maps API"] },
+    { "name": "Cloud & DevOps", "skills": ["Azure", "AWS", "Kubernetes", "Service Fabric", "Azure DevOps", "Octopus Deploy", "Git"] },
+    { "name": "Integration & Messaging", "skills": ["REST APIs", "Web Services", "Service Bus", "Bing Maps API"] },
     { "name": "Data", "skills": ["SQL Server", "Oracle", "MySQL", "Cosmos DB", "Redis", "MongoDB", "DynamoDB", "Neo4j"] },
     { "name": "Practices", "skills": ["Agile Scrum", "Unit Testing", "Clean Code", "SOLID", "Code Review", "Mentoring", "Software Architecture"] }
   ],

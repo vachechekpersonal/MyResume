@@ -95,6 +95,17 @@ public sealed class CvJsonTests
     }
 
     [Fact]
+    public void Every_skill_chip_is_used_by_at_least_one_experience()
+    {
+        var cv = LoadRealCv();
+        var used = cv.Experiences.SelectMany(e => e.Skills).ToHashSet(StringComparer.Ordinal);
+
+        var unused = cv.SkillGroups.SelectMany(g => g.Skills).Where(s => !used.Contains(s)).ToList();
+
+        Assert.Empty(unused);
+    }
+
+    [Fact]
     public void Employment_entries_have_highlights_and_skills()
     {
         var cv = LoadRealCv();

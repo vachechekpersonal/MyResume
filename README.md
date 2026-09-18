@@ -32,6 +32,7 @@ All content lives in `src/MyResume.Web/wwwroot/data/cv.json`. Rules enforced by 
 
 - experiences are listed newest first and must not overlap;
 - every `skills` tag on an experience must appear in `skillGroups`;
+- every skill chip in `skillGroups` is used by at least one experience (a chip that filters to zero roles is a data error);
 - no phone number or email address (LinkedIn only).
 
 ## Deploy
