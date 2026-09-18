@@ -15,8 +15,10 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\MyResume.Core\MyResume.Core.csproj" />
     <ProjectReference Include="..\..\src\MyResume.Web\MyResume.Web.csproj" />
+    <ProjectReference Include="..\..\tools\MyResume.Prerender\MyResume.Prerender.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="..\..\src\MyResume.Web\wwwroot\data\cv.json" Link="data\cv.json" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="..\..\src\MyResume.Web\wwwroot\index.html" Link="wwwroot\index.html" CopyToOutputDirectory="PreserveNewest" />
   </ItemGroup>
 </Project>

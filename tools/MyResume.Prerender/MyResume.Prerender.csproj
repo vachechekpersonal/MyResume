@@ -1,0 +1,11 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>MyResume.Prerender</RootNamespace>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\MyResume.Core\MyResume.Core.csproj" />
+    <ProjectReference Include="..\..\src\MyResume.Web\MyResume.Web.csproj" />
+  </ItemGroup>
+</Project>

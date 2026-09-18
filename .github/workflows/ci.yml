@@ -48,6 +48,16 @@ jobs:
             sed -i "s|<base href=\"/\" />|<base href=\"$base\" />|" "$site/index.html" "$site/404.html"
             echo "No CNAME found; base href set to $base"
           fi
+      - name: Prerender the CV into index.html
+        run: |
+          set -euo pipefail
+          site=publish/wwwroot
+          if [ -f "$site/CNAME" ]; then
+            url="https://$(cat "$site/CNAME")/"
+          else
+            url="https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/"
+          fi
+          dotnet run --project tools/MyResume.Prerender --configuration Release --no-build -- "$site" "$url"
       - if: github.event_name != 'pull_request'
         uses: actions/upload-pages-artifact@v5
         with:

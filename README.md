@@ -13,9 +13,10 @@ An interactive CV for Vache Chek, built as a small showcase of clean .NET engine
 |---|---|
 | `src/MyResume.Core` | CV model, JSON contract, skill-filter logic. No UI dependency. |
 | `src/MyResume.Web` | Blazor components, browser services (theme, data loading), styles. |
-| `tests/MyResume.Tests` | Core unit tests, bUnit component tests, and integrity tests for `cv.json`. |
+| `tools/MyResume.Prerender` | Build-time tool: renders `Home` to static HTML with `HtmlRenderer` and injects it, Open Graph tags and JSON-LD into the published `index.html`. |
+| `tests/MyResume.Tests` | Core unit tests, bUnit component tests, prerender tests, and integrity tests for `cv.json`. |
 
-Dependencies flow one way: `Web → Core`, and `Tests` references both. Package versions are managed centrally in
+Dependencies flow one way: `Web → Core`, `Prerender → Web`, and `Tests` references all three. Package versions are managed centrally in
 `Directory.Packages.props`; build settings shared by every project live in `Directory.Build.props`.
 
 ## Run locally
@@ -40,6 +41,9 @@ All content lives in `src/MyResume.Web/wwwroot/data/cv.json`. Rules enforced by 
 ## Deploy
 
 Pushing to `main` builds, tests and deploys to GitHub Pages via `.github/workflows/ci.yml`.
+After publishing, CI runs `MyResume.Prerender` so the deployed `index.html` already contains the full CV markup,
+Open Graph / Twitter tags and a JSON-LD `Person` block. Visitors and crawlers see content before WebAssembly
+loads; Blazor then takes over the same DOM.
 Enable Pages once (Settings → Pages → Source: GitHub Actions).
 
 For a custom domain, add the domain in the Pages settings and create `src/MyResume.Web/wwwroot/CNAME`
