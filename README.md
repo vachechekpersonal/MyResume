@@ -1,5 +1,7 @@
 # MyResume
 
+[![CI](https://github.com/vachechekpersonal/MyResume/actions/workflows/ci.yml/badge.svg)](https://github.com/vachechekpersonal/MyResume/actions/workflows/ci.yml)
+
 An interactive CV for Vache Chek, built as a small showcase of clean .NET engineering.
 
 - **Stack:** .NET 10, Blazor WebAssembly (standalone, static hosting), hand-written CSS, xUnit v3 + bUnit.

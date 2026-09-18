@@ -23,10 +23,14 @@ jobs:
       - uses: actions/setup-dotnet@v6
         with:
           global-json-file: global.json
+          cache: true
+          cache-dependency-path: Directory.Packages.props
+      # Relinks the .NET runtime for WebAssembly so the published payload is smaller.
+      - run: dotnet workload install wasm-tools
       - run: dotnet restore
       - run: dotnet build --no-restore --configuration Release
       - run: dotnet test --no-build --configuration Release --report-xunit-trx --results-directory TestResults
-      - if: failure()
+      - if: always()
         uses: actions/upload-artifact@v7
         with:
           name: test-results
