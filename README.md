@@ -36,6 +36,8 @@ The browser tests are skipped unless `MYRESUME_SITE` points at a published `wwwr
     pwsh tests/MyResume.E2E/bin/Release/net10.0/playwright.ps1 install chromium
     MYRESUME_SITE=publish/wwwroot dotnet test tests/MyResume.E2E -c Release
 
+Set `MYRESUME_SCREENSHOTS=<dir>` as well to save full-page screenshots (light, dark, phone width) for visual review.
+
 Tests run on Microsoft.Testing.Platform (opted in via `global.json`), which is required for xUnit v3 on the .NET 10 SDK.
 
 ## Edit the CV

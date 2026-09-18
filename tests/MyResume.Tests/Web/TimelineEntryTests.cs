@@ -104,6 +104,24 @@ public sealed class TimelineEntryTests : BunitContext
     }
 
     [Fact]
+    public void Expansion_command_applies_once_per_version_so_a_re_render_keeps_a_later_manual_toggle()
+    {
+        var cut = RenderEntry(Role);
+
+        cut.Render(p => p.Add(c => c.Expansion, new ExpansionCommand(1, true)));
+        Assert.Equal("true", cut.Find("button.entry__toggle").GetAttribute("aria-expanded"));
+
+        cut.Find("button.entry__toggle").Click();
+        Assert.Equal("false", cut.Find("button.entry__toggle").GetAttribute("aria-expanded"));
+
+        cut.Render(p => p.Add(c => c.Expansion, new ExpansionCommand(1, true)));
+        Assert.Equal("false", cut.Find("button.entry__toggle").GetAttribute("aria-expanded"));
+
+        cut.Render(p => p.Add(c => c.Expansion, new ExpansionCommand(2, true)));
+        Assert.Equal("true", cut.Find("button.entry__toggle").GetAttribute("aria-expanded"));
+    }
+
+    [Fact]
     public void Career_break_renders_as_marker_without_toggle()
     {
         var cut = RenderEntry(TestData.CareerBreak(new DateOnly(2011, 4, 1), new DateOnly(2011, 10, 1)));

@@ -74,6 +74,25 @@ public sealed class TimelineSectionTests : BunitContext
             Assert.Contains("using Azure, React", cut.Find("p.filter-summary").TextContent, StringComparison.Ordinal));
     }
 
+    [Fact]
+    public void Expand_all_and_collapse_all_apply_to_every_role_and_leave_manual_toggles_working()
+    {
+        var cut = RenderSection(TestData.Cv().Experiences);
+
+        cut.Find("button:contains('Expand all')").Click();
+        Assert.All(cut.FindAll("button.entry__toggle"), t => Assert.Equal("true", t.GetAttribute("aria-expanded")));
+
+        cut.Find("button:contains('Collapse all')").Click();
+        Assert.All(cut.FindAll("button.entry__toggle"), t => Assert.Equal("false", t.GetAttribute("aria-expanded")));
+
+        cut.FindAll("button.entry__toggle")[1].Click();
+        Assert.Equal("true", cut.FindAll("button.entry__toggle")[1].GetAttribute("aria-expanded"));
+
+        // A repeated command re-applies even though the previous one was the same.
+        cut.Find("button:contains('Collapse all')").Click();
+        Assert.All(cut.FindAll("button.entry__toggle"), t => Assert.Equal("false", t.GetAttribute("aria-expanded")));
+    }
+
     private IRenderedComponent<TimelineSection> RenderSection(IReadOnlyList<Experience> experiences) =>
         Render<TimelineSection>(p => p.Add(c => c.Experiences, experiences));
 }

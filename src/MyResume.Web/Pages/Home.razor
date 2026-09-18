@@ -22,6 +22,7 @@ else
         </Actions>
     </Header>
     <SkillUrlSync Groups="_cv.SkillGroups" />
+    <SectionNav Sections="Sections" />
     <main>
         <ProfileSection Profile="_cv.Profile" />
         <SkillsSection Groups="_cv.SkillGroups" Experiences="_cv.Experiences" />
@@ -33,6 +34,15 @@ else
 }
 
 @code {
+    private static readonly IReadOnlyList<SectionLink> Sections =
+    [
+        new("about", "Profile"),
+        new("skills", "Skills"),
+        new("experience", "Experience"),
+        new("education", "Education"),
+        new("languages", "Languages"),
+    ];
+
     private readonly CancellationTokenSource _loading = new();
     private Cv? _cv;
     private string? _error;

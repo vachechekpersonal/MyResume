@@ -70,7 +70,8 @@ svg { display: block; }
 
 :focus-visible { outline: 3px solid var(--colour-focus); outline-offset: 2px; }
 
-section { margin-block-end: var(--space-12); }
+/* scroll-margin keeps a section heading clear of the sticky section nav when jumped to. */
+section { margin-block-end: var(--space-12); scroll-margin-block-start: 4rem; }
 
 /* ---------- Shared components ---------- */
 .status {

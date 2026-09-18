@@ -2,7 +2,13 @@
 @inject SkillSelection Selection
 
 <section id="experience" aria-labelledby="experience-heading">
-    <h2 id="experience-heading">Experience</h2>
+    <div class="experience__header">
+        <h2 id="experience-heading">Experience</h2>
+        <div class="experience__tools no-print" role="group" aria-label="Expand or collapse all roles">
+            <button type="button" class="tool" @onclick="() => _expansion = _expansion.Next(true)">Expand all</button>
+            <button type="button" class="tool" @onclick="() => _expansion = _expansion.Next(false)">Collapse all</button>
+        </div>
+    </div>
 
     @* Rendered permanently so assistive technology registers the live region before it first changes. *@
     <p class="filter-summary no-print" role="status" hidden="@(!Selection.IsActive)">
@@ -19,12 +25,15 @@
             <TimelineEntry @key="experience"
                            Experience="experience"
                            SelectedSkills="Selection.Selected"
-                           InitiallyExpanded="index == 0" />
+                           InitiallyExpanded="index == 0"
+                           Expansion="_expansion.Version == 0 ? null : _expansion" />
         }
     </ol>
 </section>
 
 @code {
+    private ExpansionCommand _expansion;
+
     [Parameter, EditorRequired] public IReadOnlyList<Experience> Experiences { get; set; } = [];
 
     private IEnumerable<Experience> Ordered => Experiences.OrderByDescending(e => e.Period.Start);

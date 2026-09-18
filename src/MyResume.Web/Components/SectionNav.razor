@@ -1,0 +1,49 @@
+@* Sticky in-page navigation. Plain fragment links work before Blazor starts; once it has, js/sections.js
+   takes over clicks so the ?skills= query survives, and marks the section in view with aria-current. *@
+@implements IAsyncDisposable
+@inject IJSRuntime Js
+
+<nav class="section-nav no-print" aria-label="Sections" @ref="_nav">
+    <ul role="list">
+        @foreach (var section in Sections)
+        {
+            <li><a href="#@section.Id" data-section="@section.Id">@section.Label</a></li>
+        }
+    </ul>
+</nav>
+
+@code {
+    private ElementReference _nav;
+    private IJSObjectReference? _module;
+
+    [Parameter, EditorRequired] public IReadOnlyList<SectionLink> Sections { get; set; } = [];
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender)
+        {
+            return;
+        }
+
+        _module = await Js.InvokeAsync<IJSObjectReference>("import", "./js/sections.js");
+        await _module.InvokeVoidAsync("observe", _nav);
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_module is null)
+        {
+            return;
+        }
+
+        try
+        {
+            await _module.InvokeVoidAsync("unobserve", _nav);
+            await _module.DisposeAsync();
+        }
+        catch (JSDisconnectedException)
+        {
+            // The page is going away; nothing left to clean up.
+        }
+    }
+}

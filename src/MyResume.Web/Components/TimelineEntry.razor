@@ -44,6 +44,7 @@ else
     private readonly string _bodyId = $"entry-{Guid.NewGuid():N}";
     private readonly HashSet<string> _lastSelection = new(StringComparer.OrdinalIgnoreCase);
     private bool _expanded;
+    private int _lastCommandVersion;
 
     [Parameter, EditorRequired] public Experience Experience { get; set; } = default!;
 
@@ -51,6 +52,9 @@ else
     [Parameter, EditorRequired] public IReadOnlySet<string> SelectedSkills { get; set; } = new HashSet<string>();
 
     [Parameter] public bool InitiallyExpanded { get; set; }
+
+    /// <summary>Latest expand-all / collapse-all command from the section; applied once per <see cref="ExpansionCommand.Version"/>.</summary>
+    [Parameter] public ExpansionCommand? Expansion { get; set; }
 
     private DateOnly Today => DateOnly.FromDateTime(Clock.GetUtcNow().UtcDateTime);
 
@@ -60,6 +64,12 @@ else
 
     protected override void OnParametersSet()
     {
+        if (Expansion is { } command && command.Version != _lastCommandVersion)
+        {
+            _lastCommandVersion = command.Version;
+            _expanded = command.Expanded;
+        }
+
         if (_lastSelection.SetEquals(SelectedSkills))
         {
             return;
