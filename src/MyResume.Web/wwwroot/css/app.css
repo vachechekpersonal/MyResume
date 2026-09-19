@@ -129,7 +129,7 @@ section { margin-block-end: var(--space-12); scroll-margin-block-start: 4rem; }
     --colour-accent-soft: #fff;
     --shadow-sm: none;
   }
-  @page { margin: 12mm 14mm; }
+  @page { margin: 12mm; }
   body { font-size: 10pt; line-height: 1.35; }
   h1 { font-size: 20pt; }
   h2 { font-size: 13pt; margin-block-end: var(--space-2); break-after: avoid; }
