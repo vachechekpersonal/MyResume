@@ -24,3 +24,10 @@
 @media (max-width: 30rem) {
   .qualification { grid-template-columns: 1fr; gap: var(--space-1); }
 }
+
+@media print {
+  .qualifications { gap: var(--space-1); }
+  .qualification { padding: var(--space-1) 0; gap: var(--space-3); border: 0; border-block-end: 1px solid var(--colour-border); border-radius: 0; break-inside: avoid; }
+  .qualification:last-child { border-block-end: 0; }
+  .qualification__institution, .qualification__note { font-size: 9pt; }
+}

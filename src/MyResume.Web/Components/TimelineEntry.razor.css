@@ -117,10 +117,29 @@
 .entry__break-label { font-style: italic; }
 
 @media print {
+  .entry { padding-inline-start: var(--space-6); padding-block-end: var(--space-3); break-inside: auto; }
+  .entry::after { inset-block-start: 0.2rem; width: 0.75rem; height: 0.75rem; border-width: 2px; }
+  .entry::before { inset-inline-start: 0.3125rem; }
   .entry__body--collapsed { display: block; }
   .entry--dimmed .entry__toggle { background: var(--colour-surface); border-color: var(--colour-border); }
   .entry--dimmed .entry__role { color: var(--colour-text); font-weight: 700; }
-  .entry__toggle { box-shadow: none; }
+  .entry__toggle {
+    grid-template-areas: "role period" "company period";
+    grid-template-columns: 1fr auto;
+    column-gap: var(--space-4);
+    padding: 0;
+    border: 0;
+    box-shadow: none;
+    break-after: avoid;
+  }
+  .entry__period { font-size: 9pt; align-self: baseline; }
+  .entry__role { font-size: 11pt; margin-block: 0; }
+  .entry__company { font-size: 9.5pt; }
   .entry__chevron { display: none; }
-  .entry { break-inside: avoid; }
+  .entry__body { padding: var(--space-1) 0 0; }
+  .entry__highlights { gap: 0; }
+  .entry__tags { margin-block-start: var(--space-1); gap: var(--space-1) var(--space-2); }
+  .tag { padding: 0; font-size: 8pt; }
+  .tag--hit { text-decoration: underline; }
+  .entry--break { padding-block: 0 var(--space-3); font-size: 9.5pt; }
 }

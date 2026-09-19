@@ -5,3 +5,7 @@
   color: var(--colour-text-muted);
   font-size: 0.9rem;
 }
+
+@media print {
+  .site-footer { margin-block-start: var(--space-4); padding-block-start: var(--space-2); font-size: 8pt; }
+}

@@ -31,3 +31,9 @@
 }
 
 .clear:hover { background: var(--colour-accent-soft); }
+
+@media print {
+  .skill-group { margin-block-end: var(--space-2); break-inside: avoid; }
+  .skill-group h3 { font-size: 8pt; margin-block-end: var(--space-1); }
+  .chips { gap: var(--space-1) var(--space-2); }
+}

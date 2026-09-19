@@ -6,3 +6,7 @@
   border-radius: var(--radius-pill);
   background: var(--colour-surface);
 }
+
+@media print {
+  .languages li { padding: 0 var(--space-2); border-radius: var(--radius-sm); }
+}

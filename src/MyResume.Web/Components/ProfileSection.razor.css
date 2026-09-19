@@ -19,3 +19,9 @@
 }
 
 .links a:hover { border-color: var(--colour-accent); }
+
+@media print {
+  .lead { font-size: 10pt; max-width: none; }
+  .links { margin-block-start: var(--space-2); }
+  .links a { padding: 0; border: 0; }
+}

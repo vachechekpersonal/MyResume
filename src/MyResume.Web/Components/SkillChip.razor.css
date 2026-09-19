@@ -26,3 +26,9 @@
 }
 
 .chip--selected .chip__detail { color: inherit; opacity: 0.85; }
+
+@media print {
+  .chip { padding: 0 var(--space-2); border-radius: var(--radius-sm); font-size: 9pt; line-height: 1.4; }
+  .chip--selected { background: transparent; color: var(--colour-text); text-decoration: underline; }
+  .chip--selected .chip__detail { color: var(--colour-text-muted); opacity: 1; }
+}
