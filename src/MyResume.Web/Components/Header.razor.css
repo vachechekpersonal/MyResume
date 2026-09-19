@@ -5,8 +5,12 @@
   justify-content: space-between;
   gap: var(--space-4);
   padding-block-end: var(--space-6);
-  margin-block-end: var(--space-8);
   border-block-end: 1px solid var(--colour-border);
+}
+
+/* On screen the sticky section nav sits directly under the header rule; in print the nav is hidden. */
+@media print {
+  .site-header { margin-block-end: var(--space-8); }
 }
 
 .site-header__subtitle {

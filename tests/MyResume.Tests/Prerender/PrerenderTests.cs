@@ -25,6 +25,15 @@ public sealed class PrerenderTests
     }
 
     [Fact]
+    public async Task Rendered_markup_is_wrapped_in_the_main_layout()
+    {
+        var html = await PageRenderer.RenderHomeAsync(FakeCvSource.Returning(TestData.Cv()), FixedTimeProvider.September2026, Site);
+
+        // Without the layout's .page wrapper the static page sits unpadded at the left edge until Blazor starts.
+        Assert.Matches("""<div class="page"[^>]* b-[a-z0-9]+>""", html);
+    }
+
+    [Fact]
     public async Task Rendered_markup_keeps_css_isolation_scopes()
     {
         var html = await PageRenderer.RenderHomeAsync(FakeCvSource.Returning(TestData.Cv()), FixedTimeProvider.September2026, Site);
